@@ -8392,19 +8392,20 @@ function renderAllocPlacementRow(agName, pad, filterShift, agId){
       const barColor2 = { draft:'#534ab7', offered:'#92400e', published:'#0369ff' }[status] || '#534ab7';
       const plcLbl    = g.plcLabel || `Plc ${g.plcNum||''}`;
 
-      // All statuses (draft, offered, published) → same Gantt bar renderer
-      // isDraft controls whether × appears on the bar
+      // All statuses (draft, offered, published) → same Gantt bar renderer,
+      // so what the coordinator sees while reviewing matches what they'll
+      // see after generating — no more "looks right only after publish" gap.
 
       // Multi-agency roster — chip per specific calendar day (not a day-of-week
       // pattern), shift always shown, agency code shown only when that day's
       // agency differs from the placement's primary agency (its first day).
-      if(!isDraft && g.isMultiAgency && g.maSelections && g.maSelections.length){
+      if(g.isMultiAgency && g.maSelections && g.maSelections.length){
         const sorted = [...g.maSelections].sort((a,b)=>a.dayIdx-b.dayIdx);
         const primaryAgId = sorted[0].agId;
         const selByAbsDay = {};
         sorted.forEach(s=>{ selByAbsDay[s.dayIdx] = s; });
-        const chipColor = { offered:'#b45309', published:'#0369ff' }[status] || '#0369ff';
-        const chipBg    = { offered:'rgba(255,193,7,0.25)', published:'rgba(3,105,255,0.14)' }[status] || 'rgba(3,105,255,0.14)';
+        const chipColor = { draft:'#6b7280', offered:'#b45309', published:'#0369ff' }[status] || '#0369ff';
+        const chipBg    = { draft:'rgba(107,114,128,0.14)', offered:'rgba(255,193,7,0.25)', published:'rgba(3,105,255,0.14)' }[status] || 'rgba(3,105,255,0.14)';
         const shortCode = name => name.split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,3);
         let maChipsHtml = '';
         for(let i=0;i<cols;i++){
@@ -8438,7 +8439,7 @@ function renderAllocPlacementRow(agName, pad, filterShift, agId){
               <div class="ag-plc-line1" style="display:flex;align-items:center;gap:5px;">
                 <span style="font-size:11px;font-weight:700;color:${barColor2};">${plcLbl}</span>
                 <span class="sbadge ${status}">${statusLbl}</span>
-                <button class="ag-plc-view-btn" onclick="event.stopPropagation();confirmViewPlacement('${currentAllocReqId}')" aria-label="View placement">View</button>
+                ${!isDraft ? `<button class="ag-plc-view-btn" onclick="event.stopPropagation();confirmViewPlacement('${currentAllocReqId}')" aria-label="View placement">View</button>` : ''}
               </div>
               ${maDateLabel || g.studentName ? `<div style="font-size:10px;color:#9ca3af;margin-top:1px;">${maDateLabel||''}${(maDateLabel && g.studentName) ? ' · ' : ''}${g.studentName||''}</div>` : ''}
             </div>
@@ -11438,6 +11439,17 @@ function setMaDaySelection(info, dayIdx){
   multiAgencySelections.push({agId:info.agId, agName:info.agName, shiftName:info.shiftName, startTime:info.startTime, endTime:info.endTime, dayIdx});
 }
 
+// Defensive invariant: only one agency can ever own a given day. Keeps the
+// most recently added entry per dayIdx and drops anything older. Called
+// wherever the array is read for rendering or review, as a safety net in
+// case a duplicate ever slips in (e.g. a fast-drag edge case where the
+// browser skips firing mouseover on an intermediate cell).
+function dedupMaSelections(){
+  const byDay = new Map();
+  multiAgencySelections.forEach(s=>byDay.set(s.dayIdx, s)); // later entries overwrite earlier ones for the same day
+  multiAgencySelections = [...byDay.values()];
+}
+
 // Week mode — one unit selects a whole week at once, using the discipline's
 // work-days-per-week to pick which weekdays (matches the same WDPW logic
 // already used for front-loading), not every day in the 7-day span. Felix,
@@ -11590,6 +11602,7 @@ function applyMaCapacityHighlight(){
 }
 
 function applyMaSelectionClasses(){
+  dedupMaSelections();
   document.querySelectorAll('.ag-shift-cell.ma-selected').forEach(c=>c.classList.remove('ma-selected'));
   multiAgencySelections.forEach(s=>{
     document.querySelectorAll('.ag-shift[data-agid][data-shiftname]').forEach(rowEl=>{
@@ -11625,6 +11638,7 @@ function onMaCountChange(){
 }
 
 function openMaReviewPanel(){
+  dedupMaSelections(); // guarantee no day is double-claimed before this becomes the roster of record
   const r = REQ_META[currentAllocReqId];
   const rid = currentAllocReqId;
 
@@ -11682,6 +11696,7 @@ function openMaReviewPanel(){
 }
 
 function updateMaBar(){
+  dedupMaSelections();
   let bar = document.getElementById('maBottomBar');
   let breakdownPanel = document.getElementById('maBreakdownPanel');
   if(!multiAgencyMode){ if(bar) bar.remove(); if(breakdownPanel) breakdownPanel.remove(); return; }
