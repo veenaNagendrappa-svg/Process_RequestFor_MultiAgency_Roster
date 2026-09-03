@@ -1321,10 +1321,11 @@ body.rotation-mode #btnBuildRotation{display:none;}
 }
 .ag-shift-name{font-size:11px;font-weight:400;color:#666;white-space:normal;line-height:1.35;flex:1;min-width:0;}
 .ma-select-all-btn{
-  display:none;flex-shrink:0;height:20px;padding:0 7px;border:1px solid #1976d2;border-radius:3px;
+  flex-shrink:0;height:20px;padding:0 7px;border:1px solid #1976d2;border-radius:3px;
   background:white;color:#1976d2;font-family:inherit;font-size:9.5px;font-weight:600;cursor:pointer;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .15s;
 }
-body.multi-agency-mode .ag-shift:hover .ma-select-all-btn{display:inline-block;}
+body.multi-agency-mode .ag-shift:hover .ma-select-all-btn{opacity:1;pointer-events:all;}
 body.multi-agency-mode .ag-shift-cell:not(.wknd){user-select:none;}
 .ag-shift-meta{font-size:11px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
 .ag-shift-cell{display:flex;align-items:center;justify-content:center;width:46px;min-width:46px;text-align:center;font-size:12px;padding:4px 2px;border-right:1px solid #e8e8e8;color:#1976d2;background:white;text-decoration:underline;cursor:pointer;}
@@ -1402,7 +1403,7 @@ body.multi-agency-mode .ag-shift-cell:not(.wknd):hover::after{
   position:fixed;left:0;right:0;bottom:0;z-index:60;background:white;border-top:1px solid #e5e7eb;
   padding:10px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:0 -2px 8px rgba(0,0,0,.05);
 }
-.ma-pt-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+.ma-pt-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;background:#e8f0fe;margin:-10px -18px 0;padding:8px 18px;border-bottom:1px solid #d2e3fc;}
 .ma-actions-row{display:flex;align-items:center;gap:14px;flex-wrap:nowrap;width:100%;}
 .ma-bar-right{display:flex;align-items:center;gap:14px;margin-left:auto;flex-wrap:nowrap}
 .ma-status{font-size:13px;color:#374151;white-space:nowrap}
@@ -2797,6 +2798,13 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
         </span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;position:relative;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;cursor:pointer;margin-right:4px;">
+          <span>Multi-agency mode</span>
+          <span class="ae-toggle-switch" style="width:32px;height:18px;">
+            <input type="checkbox" id="maModeStartToggle" checked onchange="onMaModeStartToggleChange(this)">
+            <span class="ae-toggle-slider"></span>
+          </span>
+        </label>
         <button class="btn-alloc-action btn-alloc-primary" id="btnPrimaryAction" onclick="openAllocEditRequest()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           <span id="btnPrimaryActionLabel">Edit Request</span>
@@ -2934,6 +2942,15 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
         <option value="pt">Placement Type</option>
       </select>
     </div>
+
+    <!-- GROOMING DEMO: jump straight to any demo request, no more cycling through clicks -->
+    <select id="demoJumpSelect" onchange="if(this.value) navigateToAllocOptions(this.value);"
+      title="Jump to a demo request"
+      style="margin-left:10px;height:26px;padding:0 8px;font-size:11px;font-weight:600;border:1px dashed #7c3aed;border-radius:4px;background:#faf5ff;color:#7c3aed;cursor:pointer;flex-shrink:0;">
+      <option value="">⇄ Jump to demo request…</option>
+      <option value="r87520">With shifts (87520)</option>
+      <option value="r99001">Without shifts (99001)</option>
+    </select>
 
     <!-- Availability legend + loading indicator -->
     <div style="display:flex;align-items:center;gap:6px;margin-left:8px;flex-shrink:0;">
@@ -3937,17 +3954,17 @@ const AGENCIES = [
        dates:'20 May – 26 May 2026',comment:'',allChip:true},
       {id:'r87520',reqNum:'Req: 87520',status:'pending',
        ep:'ACU',campus:'Melbourne',epCode:'QACURR513A',
-       discipline:'Nursing',type:'General Medical',year:'Yr 3',qty:3,dur:'18 days',
+       discipline:'Nursing',type:'General Medical',year:'Yr 3',qty:3,dur:'8 days',
        shiftLabel:'AM only',shiftBadge:'sb-am',chipStyle:'ep',chipLabel:'AM',
        shiftId:'s-am',ptId:'pt-gm',
-       dates:'13 May – 9 Jun 2026',
+       dates:'11 May – 7 Jun 2026',
        comment:'Please allocate near ICU if possible',
        roster:{days:['Mon','Wed'],shift:'AM (06:30-15:30)'},
        rosterShifts:[
          {day:'Mon', chipLabel:'AM', cells:{0:3,7:3,14:3,21:3}},
          {day:'Wed', chipLabel:'AM', cells:{2:3,9:3,16:3,23:3}},
        ],
-       startDate:'2026-05-13',endDate:'2026-06-09',
+       startDate:'2026-05-11',endDate:'2026-06-07',
        cells:{0:3,2:3,7:3,9:3,14:3,16:3,21:3,23:3}},
       // ── Over-capacity request: AM cap is 1 on Mondays, requesting 4 → cells go RED ──
       {id:'r87530',reqNum:'Req: 87530',status:'pending',
@@ -5600,7 +5617,7 @@ VICTORIA_REQS.forEach(r=>{REQ_META[r.id]=r;});
 TULSA_REQS.forEach(r=>{REQ_META[r.id]=r;});
 
 function initProcessRequest(){
-  if(REQ_META['r99001']) navigateToAllocOptions('r99001');
+  if(REQ_META['r87520']) navigateToAllocOptions('r87520');
 }
 
 // EP Balance data computed from REQUESTS (slot counts) + PLACEMENTS (record counts)
@@ -7494,8 +7511,16 @@ function refreshAllocActionButtons(rid){
   }
 }
 
+function onMaModeStartToggleChange(el){
+  if(!currentAllocReqId) return;
+  if(el.checked && !multiAgencyMode) toggleMultiAgencyMode(currentAllocReqId);
+  else if(!el.checked && multiAgencyMode) toggleMultiAgencyMode(currentAllocReqId);
+}
+
 function toggleMultiAgencyMode(rid){
   multiAgencyMode = !multiAgencyMode;
+  const maStartToggle = document.getElementById('maModeStartToggle');
+  if(maStartToggle) maStartToggle.checked = multiAgencyMode; // keep header toggle in sync regardless of entry point
   const agRows = document.getElementById('agRows');
   const gbSelect = document.getElementById('allocGroupBySelect');
   if(multiAgencyMode){
@@ -7564,6 +7589,19 @@ function renderDemoStatusSwitcher(rid){
   }).join('');
 }
 
+// Single source of truth for the alloc grid's date-window offset. Called
+// whenever the visible window needs to (re)align to a request's own start
+// date — on initial open AND whenever the view mode changes — so switching
+// Day/Week/Requested dates never snaps back to BASE for a request whose
+// dates don't happen to fall on it.
+function computeAllocDateOffset(r){
+  if(r && r.startDate){
+    const diffDays = Math.round((new Date(r.startDate) - BASE) / 86400000);
+    return isNaN(diffDays) ? 0 : diffDays;
+  }
+  return 0;
+}
+
 function navigateToAllocOptions(rid){
   try {
 
@@ -7571,6 +7609,14 @@ function navigateToAllocOptions(rid){
   const r = REQ_META[rid];
   if(!r) return;
   currentAllocReqId = rid;
+  // Align the visible date window to this specific request's own start date,
+  // rather than always defaulting to BASE. Without this, any request whose
+  // real dates don't happen to fall on BASE (e.g. r87520's May dates, versus
+  // r99001's August dates which coincidentally align with BASE) would open
+  // showing an unrelated window months away from the actual request period —
+  // meaning any cell clicks and the roster built from them would be anchored
+  // to the wrong calendar dates entirely.
+  allocDateOffset = computeAllocDateOffset(r);
   allocDraftPlacements = allocDraftPlacements.filter(d=>d.reqId===rid); // keep only drafts for this req
   allocStatusFilter = new Set(['pending']);
   document.getElementById('allocChipOpen')?.classList.add('active-chip');
@@ -7758,6 +7804,14 @@ function navigateToAllocOptions(rid){
   renderAllocRows(rid);
   // Fire availability highlight after grid renders
   setTimeout(()=>runAvailabilityHighlight(), 60);
+
+  // Prototype convenience: start straight in multi-agency mode by default,
+  // via the toggle next to Edit Request — avoids reviewers needing to find
+  // the kebab menu entry point first.
+  const maStartToggle = document.getElementById('maModeStartToggle');
+  if(maStartToggle && maStartToggle.checked && !multiAgencyMode){
+    toggleMultiAgencyMode(rid);
+  }
 
   // Per Kaitlyn: Rotation type = always rotation builder. Any other type = always standard. No combination.
   const isRotation = r.type === 'Rotation';
@@ -7986,7 +8040,7 @@ function renderRequestedShiftsRow(r){
           const shifts = new Set();
           r.rosterShifts.forEach(rs=>{
             for(let d=0;d<7;d++){
-              const dayIdx = allocDateOffset + w*7 + d;
+              const dayIdx = w*7 + d; // request-relative offset — matches how rs.cells is keyed
               if(rs.cells&&rs.cells[dayIdx]) shifts.add(rs.chipLabel);
             }
           });
@@ -8024,7 +8078,7 @@ function renderRequestedShiftsRow(r){
       let label = '';
       if(inReq){
         if(hasRoster){
-          r.rosterShifts.forEach(rs=>{ if(rs.cells&&rs.cells[i+allocDateOffset]) label = rs.chipLabel; });
+          r.rosterShifts.forEach(rs=>{ if(rs.cells&&rs.cells[i]) label = rs.chipLabel; });
         } else {
           label = r.shiftLabel && !['Any shift','All shifts','Any'].includes(r.shiftLabel)
             ? r.shiftLabel.replace(' only','').replace(' shift','') : 'Any';
@@ -8062,13 +8116,20 @@ function renderRequestedShiftsRow(r){
 function isDateInRange(d, r){
   if(!r) return false;
   if(r.allChip) return d.getDay()!==0 && d.getDay()!==6;
+  // r.cells / r.rosterShifts keys are day-offsets from the REQUEST's own
+  // start date, not from BASE. allocDateOffset (set in navigateToAllocOptions)
+  // already holds the gap between the request's start date and BASE, so
+  // subtracting it converts an absolute grid date back to a request-relative
+  // offset. Without this, any request whose start date isn't BASE itself
+  // (e.g. r87520 in May vs BASE's 17 Aug) matches nothing and every column
+  // gets hidden by the "Requested dates" filter.
   if(r.cells){
-    const idx = Math.round((d - new Date(2026,7,17)) / 86400000);
+    const idx = Math.round((d - BASE) / 86400000) - allocDateOffset;
     return !!r.cells[idx];
   }
   // fallback: if rosterShifts, check any cell
   if(r.rosterShifts){
-    const idx = Math.round((d - new Date(2026,7,17)) / 86400000);
+    const idx = Math.round((d - BASE) / 86400000) - allocDateOffset;
     return r.rosterShifts.some(rs=>rs.cells&&rs.cells[idx]);
   }
   return false;
@@ -8099,7 +8160,8 @@ function renderAllocCells(caps, focusReq, cls, agId){
         if(date.getDay()===0||date.getDay()===6) continue;
         const inReq = focusReq ? isDateInRange(date, focusReq) : false;
         if(inReq) inReqAny = true;
-        const cv = caps ? caps[dayIdx] : null;
+        const relIdx = w*7 + d2; // request-relative fallback — mirrors day mode's caps[i] fallback below
+        const cv = caps ? (caps[dayIdx] ?? caps[relIdx]) : null;
         if(cv!==null&&cv!==undefined){ weekCap = (weekCap||0) + cv; }
       }
       const hidden = reqDatesOnly && !inReqAny;
@@ -8201,22 +8263,24 @@ function renderAllocPlacementRow(agName, pad, filterShift, agId){
     if(!reqDatesOnly) return true;
     if(!focusR) return true;
     if(isWeekMode){
-      const weekStart = allocDateOffset + i * 7;
       for(let d2=0; d2<7; d2++){
-        const dayIdx = weekStart + d2;
-        const date = new Date(BASE); date.setDate(date.getDate() + dayIdx);
+        const relIdx = i * 7 + d2; // request-relative offset — matches focusR.cells keys
+        const absIdx = allocDateOffset + relIdx; // absolute offset from BASE — for the real calendar date only
+        const date = new Date(BASE); date.setDate(date.getDate() + absIdx);
         if(date.getDay()===0||date.getDay()===6) continue;
         if(focusR.allChip) return true;
-        if(focusR.cells && focusR.cells[dayIdx]) return true;
-        if(focusR.rosterShifts && focusR.rosterShifts.some(rs=>rs.cells&&rs.cells[dayIdx])) return true;
+        if(focusR.cells && focusR.cells[relIdx]) return true;
+        if(focusR.rosterShifts && focusR.rosterShifts.some(rs=>rs.cells&&rs.cells[relIdx])) return true;
       }
       return false;
     }
-    // Day mode — use allocDateOffset+i to match renderAllocCells
+    // Day mode — i is already the request-relative index once allocDateOffset
+    // has shifted the visible window; only the calendar-date check (weekends)
+    // needs the absolute BASE-anchored offset.
     const absIdx = allocDateOffset + i;
     if(focusR.allChip){ const d = new Date(BASE); d.setDate(d.getDate()+absIdx); return d.getDay()!==0&&d.getDay()!==6; }
-    if(focusR.cells) return !!focusR.cells[absIdx];
-    if(focusR.rosterShifts) return focusR.rosterShifts.some(rs=>rs.cells&&rs.cells[absIdx]);
+    if(focusR.cells) return !!focusR.cells[i];
+    if(focusR.rosterShifts) return focusR.rosterShifts.some(rs=>rs.cells&&rs.cells[i]);
     return true;
   });
 
@@ -9004,7 +9068,11 @@ function setAllocViewBy(mode, btn){
     reqDatesOnly = false;
     document.getElementById('screen-alloc')?.classList.remove('alloc-week-view');
   }
-  allocDateOffset = 0;
+  // Re-align to the currently open request's own start date rather than
+  // resetting to BASE — a hardcoded reset here was snapping the grid back
+  // to 17 Aug 2026 for any request whose real dates fall elsewhere (e.g.
+  // r87520's May window) the moment Day/Week was clicked.
+  allocDateOffset = computeAllocDateOffset(REQ_META[currentAllocReqId]);
   renderAllocHeader();
   renderRequestedShiftsRow(REQ_META[currentAllocReqId]);
   renderAllocRows(currentAllocReqId);
@@ -11536,46 +11604,56 @@ function selectAllMaRow(btn){
   if(!cells.length) return;
 
   const r = REQ_META[currentAllocReqId];
-  // Front-loading rule (confirmed via the discipline WDPW screenshots): fill
-  // WDPW days per week, but stop once the requested duration is reached —
-  // don't just keep repeating WDPW across every visible week regardless of
-  // how much has already been selected.
-  const durDays = parseInt(r?.dur) || Infinity;
   const wdpw = getWorkDaysPerWeek(r?.discipline);
 
-  let totalSelected = new Set(multiAgencySelections.map(s=>s.dayIdx)).size;
+  // Felix's feedback: for a request that already has shifts, Select All
+  // should read the request's own requested days rather than the discipline
+  // WDPW pattern. Requests without a roster (e.g. r99001) are untouched —
+  // they keep the existing WDPW/front-loading behaviour exactly as before.
+  const shiftPatternDays = (r && r.roster && r.roster.days && r.roster.days.length) ? r.roster.days : null;
+  const DOW_MAP = {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  const targetDows = shiftPatternDays ? shiftPatternDays.map(d=>DOW_MAP[d]).filter(d=>d!==undefined) : null;
+
   let weekIdxSeen = null;
   let weekCount = 0;
 
   if(allocViewMode === 'week'){
-    for(let i=0; i<cells.length && totalSelected<durDays; i++){
+    for(let i=0; i<cells.length; i++){
       const cell = cells[i];
       if(cell.classList.contains('hidden-col')) continue;
       const info = resolveMaCellInfo(cell);
       if(!info) continue;
-      for(const dayIdx of getMaTargetDays(info, i)){
-        if(totalSelected >= durDays) break;
-        const existing = multiAgencySelections.find(s=>s.dayIdx===dayIdx);
-        if(existing && (existing.agId!==info.agId || existing.shiftName!==info.shiftName)) continue; // leave other agencies' days untouched
-        setMaDaySelection(info, dayIdx);
-        if(!existing) totalSelected++;
+      if(targetDows){
+        const weekStart = allocDateOffset + i*7;
+        for(let d2=0; d2<7; d2++){
+          const dayIdx = weekStart + d2;
+          const date = new Date(BASE); date.setDate(date.getDate()+dayIdx);
+          if(targetDows.includes(date.getDay())) setMaDaySelection(info, dayIdx);
+        }
+      } else {
+        for(const dayIdx of getMaTargetDays(info, i)){
+          setMaDaySelection(info, dayIdx); // overwrites whatever's already there, per Felix's feedback
+        }
       }
     }
   } else {
-    for(let i=0; i<cells.length && totalSelected<durDays; i++){
+    for(let i=0; i<cells.length; i++){
       const cell = cells[i];
       if(cell.classList.contains('wknd') || cell.classList.contains('hidden-col')) continue;
       const dayIdx = allocDateOffset + i;
+      const info = resolveMaCellInfo(cell);
+      if(!info) continue;
+      if(targetDows){
+        const date = new Date(BASE); date.setDate(date.getDate()+dayIdx);
+        if(!targetDows.includes(date.getDay())) continue;
+        setMaDaySelection(info, dayIdx);
+        continue;
+      }
       const weekIdx = Math.floor((dayIdx - allocDateOffset) / 7);
       if(weekIdx !== weekIdxSeen){ weekIdxSeen = weekIdx; weekCount = 0; }
       if(weekCount >= wdpw) continue; // this week's WDPW allotment is used up
-      const existing = multiAgencySelections.find(s=>s.dayIdx===dayIdx);
-      const info = resolveMaCellInfo(cell);
-      if(!info) continue;
-      if(existing && (existing.agId!==info.agId || existing.shiftName!==info.shiftName)) continue; // leave other agencies' days untouched
-      setMaDaySelection(info, dayIdx);
+      setMaDaySelection(info, dayIdx); // overwrites whatever's already there, per Felix's feedback
       weekCount++;
-      if(!existing) totalSelected++;
     }
   }
   applyMaSelectionClasses();
