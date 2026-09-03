@@ -1383,8 +1383,8 @@ body.multi-agency-mode .ag-shift-cell:not(.wknd){user-select:none;}
 /* ── Multi-agency allocation mode ── */
 body.multi-agency-mode .ag-shift-cell:not(.wknd){ cursor:pointer; }
 body.multi-agency-mode .ag-shift-cell{ position:relative; }
-.ag-shift-cell.ma-cap-fit{ background:#dcfce7; }
-.ag-shift-cell.ma-cap-partial{ background:#fef9c3; }
+.ag-shift-cell.ma-cap-fit{ background:#a5d6a7; }
+.ag-shift-cell.ma-cap-partial{ background:#ffcc80; }
 .ma-cap-marker{ position:absolute; bottom:1px; right:2px; font-size:9px; font-weight:700; line-height:1; }
 .ag-shift-cell.ma-cap-fit .ma-cap-marker{ color:#166534; }
 .ag-shift-cell.ma-cap-partial .ma-cap-marker{ color:#854d0e; }
@@ -1395,13 +1395,16 @@ body.multi-agency-mode .ag-shift-cell:not(.wknd):hover{ outline:2px dashed #1976
 body.multi-agency-mode .ag-shift-cell:not(.wknd):hover::after{
   content:'+';position:absolute;top:2px;right:3px;color:#1976d2;font-weight:700;font-size:10px;
 }
-.ag-shift-cell.ma-selected{ background:#eef0f2!important;outline:2px solid #6b7280;outline-offset:-2px;color:#374151!important;font-weight:700; }
+.ag-shift-cell.ma-selected{ background:#dbeafe!important;outline:2px solid #1976d2;outline-offset:-2px;color:#1e40af!important;font-weight:700; }
+.ma-pt-label{font-size:11px;color:#6b7280;white-space:nowrap;}
 
 .ma-bottom-bar{
   position:fixed;left:0;right:0;bottom:0;z-index:60;background:white;border-top:1px solid #e5e7eb;
-  padding:10px 18px;display:flex;align-items:center;box-shadow:0 -2px 8px rgba(0,0,0,.05);
+  padding:10px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:0 -2px 8px rgba(0,0,0,.05);
 }
-.ma-bar-right{display:flex;align-items:center;gap:14px;margin-left:auto;flex-wrap:wrap}
+.ma-pt-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+.ma-actions-row{display:flex;align-items:center;gap:14px;flex-wrap:nowrap;width:100%;}
+.ma-bar-right{display:flex;align-items:center;gap:14px;margin-left:auto;flex-wrap:nowrap}
 .ma-status{font-size:13px;color:#374151;white-space:nowrap}
 .ma-duration-label{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.03em;margin-right:4px;}
 .ma-proto-note{font-size:10.5px;color:#7c3aed;background:#faf5ff;border:1px dashed #c4b5fd;border-radius:4px;padding:2px 8px;font-style:italic;white-space:nowrap;}
@@ -2935,8 +2938,8 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
     <!-- Availability legend + loading indicator -->
     <div style="display:flex;align-items:center;gap:6px;margin-left:8px;flex-shrink:0;">
       <div style="width:1px;height:16px;background:#e0e0e0;"></div>
-      <span class="alb-legend-item"><span class="alb-swatch" style="background:#e8f5e9;border:1px solid #a5d6a7"></span> Available</span>
-      <span class="alb-legend-item"><span class="alb-swatch" style="background:#ffebee;border:1px solid #ef9a9a"></span> Negative</span>
+      <span class="alb-legend-item"><span class="alb-swatch" style="background:#a5d6a7;border:1px solid #81c784"></span> Accommodates</span>
+      <span class="alb-legend-item"><span class="alb-swatch" style="background:#ffcc80;border:1px solid #ffb74d"></span> Partially accommodates</span>
       <div class="avail-loading-indicator" id="availLoadingIndicator">
         <div class="avail-spinner"></div>
         Checking availability…
@@ -7512,7 +7515,6 @@ function toggleMultiAgencyMode(rid){
     agRows?.removeEventListener('mouseover', onMaCellMouseOver);
     document.removeEventListener('mouseup', onMaCellMouseUp);
     multiAgencySelections = [];
-    maBreakdownOpen = false;
     if(gbSelect){ gbSelect.disabled = false; gbSelect.title = ''; }
   }
   renderAllocRows(rid);
@@ -9668,7 +9670,8 @@ function renderAllocRows(focusReqId){
 
   document.getElementById('agRows').innerHTML = html;
   insertAllocContextRows();
-  if(multiAgencyMode){ applyMaSelectionClasses(); applyMaCapacityHighlight(); } // survive any re-render (filters, paging, view toggles)
+  if(multiAgencyMode) applyMaSelectionClasses();
+  applyMaCapacityHighlight(); // always — one permanent colour scheme, not gated by mode
 }
 
 let allocStatusFilter = new Set(['pending']); // open=pending by default
@@ -11376,7 +11379,6 @@ let fulfillmentMode = null; // null | 'standard' | 'rotation'
 let multiAgencyMode = false; // entry point: kebab menu "Allocate across agencies", available on any request, no placement-type gate
 let multiAgencySelections = []; // [{agId, agName, shiftName, dayIdx}] — dayIdx is absolute (relative to BASE), survives date-window paging
 let maCount = 1; // placements to allocate this round, defaults to remaining, editable, independent of the day tally
-let maBreakdownOpen = true; // persistent toggle for the placement-type breakdown strip — open by default, stays as the coordinator leaves it
 
 // Illustrative only — this file has no real "which placement types does this
 // agency support" data model yet. Confirmed with Felix (31 Aug): a selected
@@ -11387,27 +11389,32 @@ let maBreakdownOpen = true; // persistent toggle for the placement-type breakdow
 const AGENCY_PLACEMENT_TYPES = {
   'hope': ['General','Community'],
   'sa-b': ['Aged Care','Cardiology'],
-  'sa-c': ['Aged Care','Critical Care','Emergency'],
+  'sa-c': ['Aged Care','Critical Care','Emergency','Cardiology','Community','Mental Health','Oncology','Orthopaedics','Neurology','Respiratory','Renal','Perioperative'],
   'g03':  ['Critical Care','Medical Surgical'],
   'at3111': ['Aged Care','Emergency'],
 };
+// Deterministic fallback pool — this file has dozens of agency ids buried in
+// the hierarchy that aren't worth hand-mapping individually. Any agency not
+// listed above still resolves to some illustrative placement type based on
+// its own id, so clicking across many different agencies naturally produces
+// many distinct chips (useful for testing how the bar wraps with 10+ types).
+const MA_PT_FALLBACK_POOL = ['Rehabilitation','Palliative Care','Paediatrics','Mental Health','Oncology','Orthopaedics','Neurology','Respiratory','Renal','Perioperative'];
+function getMaPlacementTypesForAgency(agId){
+  if(AGENCY_PLACEMENT_TYPES[agId]) return AGENCY_PLACEMENT_TYPES[agId];
+  let hash = 0;
+  for(let i=0;i<agId.length;i++) hash = (hash*31 + agId.charCodeAt(i)) >>> 0;
+  return [MA_PT_FALLBACK_POOL[hash % MA_PT_FALLBACK_POOL.length]];
+}
 
 function computeMaPtBreakdown(){
-  const r = REQ_META[currentAllocReqId];
-  const fallbackPt = r?.type || 'Requested type';
   const counts = {};
   multiAgencySelections.forEach(s=>{
-    const pts = AGENCY_PLACEMENT_TYPES[s.agId] || [fallbackPt];
+    const pts = getMaPlacementTypesForAgency(s.agId);
     pts.forEach(pt=>{ counts[pt] = (counts[pt]||0) + 1; });
   });
   // Alphabetical, not by count — sorting by count made the order visibly
   // reshuffle every time a new day was selected, which read as jumpy/unstable.
   return Object.entries(counts).map(([pt,days])=>({pt,days})).sort((a,b)=>a.pt.localeCompare(b.pt));
-}
-
-function toggleMaBreakdown(){
-  maBreakdownOpen = !maBreakdownOpen;
-  updateMaBar();
 }
 
 let maDragState = null; // {agId, agName, shiftName, startTime, endTime, shiftRowEl, i, dragged}
@@ -11583,20 +11590,22 @@ function selectAllMaRow(btn){
 function applyMaCapacityHighlight(){
   document.querySelectorAll('.ag-shift-cell.ma-cap-fit, .ag-shift-cell.ma-cap-partial').forEach(c=>{
     c.classList.remove('ma-cap-fit','ma-cap-partial');
-    const marker = c.querySelector('.ma-cap-marker');
-    if(marker) marker.remove();
   });
-  if(!multiAgencyMode) return;
+  // Applies everywhere, not just multi-agency mode — Felix wants one
+  // permanent legend and colour scheme regardless of mode. In multi-agency
+  // mode the count is the live, editable field; otherwise it's the
+  // request's own remaining placement count, fixed.
+  const r = REQ_META[currentAllocReqId];
+  if(!r) return;
+  const targetCount = multiAgencyMode ? maCount : Math.max(1, (r.qty||1) - (r.allocated||0));
   document.querySelectorAll('#agRows .ag-shift-cell:not(.wknd)').forEach(cell=>{
     if(cell.classList.contains('ma-selected')) return; // selected state takes visual priority
     const val = parseInt(cell.textContent.trim());
     if(isNaN(val) || val<=0) return; // zero or negative — no highlight, matches "we just don't highlight" (Felix, 24 Aug)
-    if(val >= maCount){
+    if(val >= targetCount){
       cell.classList.add('ma-cap-fit');
-      cell.insertAdjacentHTML('beforeend', `<span class="ma-cap-marker" title="Fits ${maCount} or more">✓</span>`);
     } else {
       cell.classList.add('ma-cap-partial');
-      cell.insertAdjacentHTML('beforeend', `<span class="ma-cap-marker" title="Only fits some of ${maCount}">~</span>`);
     }
   });
 }
@@ -11698,19 +11707,12 @@ function openMaReviewPanel(){
 function updateMaBar(){
   dedupMaSelections();
   let bar = document.getElementById('maBottomBar');
-  let breakdownPanel = document.getElementById('maBreakdownPanel');
-  if(!multiAgencyMode){ if(bar) bar.remove(); if(breakdownPanel) breakdownPanel.remove(); return; }
+  if(!multiAgencyMode){ if(bar) bar.remove(); return; }
   if(!bar){
     bar = document.createElement('div');
     bar.id = 'maBottomBar';
     bar.className = 'ma-bottom-bar';
     document.body.appendChild(bar);
-  }
-  if(!breakdownPanel){
-    breakdownPanel = document.createElement('div');
-    breakdownPanel.id = 'maBreakdownPanel';
-    breakdownPanel.className = 'ma-breakdown-panel';
-    document.body.appendChild(breakdownPanel);
   }
   const r = REQ_META[currentAllocReqId];
   const durDays = r ? (parseInt(r.dur) || 0) : 0;
@@ -11718,64 +11720,48 @@ function updateMaBar(){
   const days = multiAgencySelections.length;
 
   let statusHtml;
-  let warnChipHtml = '';
   if(days===0){
     statusHtml = 'Select a cell to start building the roster';
   } else {
-    statusHtml = `<span class="ma-duration-label">Planned Duration</span> <span style="font-weight:700;color:#111827;">${days}</span> <span style="color:#9ca3af;">/ ${durDays} Days</span>`;
-    if(days < durDays){
-      warnChipHtml = `<span class="ma-warn insufficient">Insufficient: ${days}/${durDays} Days ⚠</span>`;
-    } else if(days > durDays){
-      warnChipHtml = `<span class="ma-warn overallocated">Overallocated: ${days}/${durDays} Days ⚠</span>`;
-    }
+    // Felix, feedback: don't duplicate selected-vs-requested with a separate
+    // warning chip — just highlight the number until they've met or
+    // exceeded the requested duration.
+    // Under-allocated is expected mid-build (still selecting) — only flag
+    // overallocated, since going past what's needed is the actual mistake.
+    // Same principle applied to both directions, for now.
+    const numColor = days !== durDays ? '#dc2626' : '#111827';
+    statusHtml = `<span class="ma-duration-label">Planned Duration</span> <span style="font-weight:700;color:${numColor};">${days}</span> <span style="color:#9ca3af;">/ ${durDays} Days</span>`;
   }
 
+  // Always visible while actioning, no expand/collapse — Felix, feedback:
+  // "I don't know if we need to expand/collapse that in the action bar, I'd
+  // just show it as they're actioning."
   const ptBreakdown = days > 0 ? computeMaPtBreakdown() : [];
-  let ptChipsHtml = '';
-  if(ptBreakdown.length){
-    const shown = ptBreakdown.slice(0,2);
-    const rest = ptBreakdown.length - shown.length;
-    ptChipsHtml = `
-      ${shown.map(x=>`<span class="ma-pt-chip">${x.pt} · ${x.days}</span>`).join('')}
-      ${rest>0 ? `<span class="ma-pt-more" onclick="toggleMaBreakdown()" style="cursor:pointer;text-decoration:underline;">+${rest} more</span>` : ''}
-      <button class="ma-pt-caret" onclick="toggleMaBreakdown()" aria-label="${maBreakdownOpen?'Hide':'Show'} placement type breakdown">
-        ${maBreakdownOpen ? '▲' : '▼'}
-      </button>`;
-  }
+  const ptChipsHtml = ptBreakdown.length
+    ? `<span class="ma-pt-label">Agency placement types selected</span> ${ptBreakdown.map(x=>`<span class="ma-pt-chip">${x.pt} · ${x.days}</span>`).join('')}`
+    : '';
 
   // Read-only info (placement types, then duration) grouped on the left;
   // everything requiring input or a click (count, then the action buttons)
   // grouped together on the right, closest to where the coordinator finishes.
+  // Placement type chips get their own row that wraps independently — with
+  // many placement types, they wrap to further lines rather than squeezing
+  // or overflowing the actions row (count/buttons), which always stays on
+  // one line.
   bar.innerHTML = `
-    <div class="ma-bar-right">
-      ${ptChipsHtml}
-      ${ptChipsHtml ? '<span class="ma-divider"></span>' : ''}
-      <span class="ma-status">${statusHtml}</span>
-      ${warnChipHtml}
-      <span class="ma-divider"></span>
-      <span class="ma-count-inline">
-        <input type="number" id="maCount" class="ma-count-input" value="${maCount}" min="1" max="${remaining}" oninput="onMaCountChange()">
-        of ${remaining} placements to allocate
-      </span>
-      <span class="ma-legend"><span class="ma-legend-fit">✓</span> Fits count &nbsp; <span class="ma-legend-partial">~</span> Partial fit</span>
-      <button class="ma-btn-exit" onclick="toggleMultiAgencyMode('${currentAllocReqId}')">Exit</button>
-      <button class="ma-btn-clear" onclick="clearMaSelections()">Clear All</button>
-      <button class="ma-btn-review" onclick="openMaReviewPanel()">Review &amp; Allocate</button>
-    </div>`;
-
-  if(maBreakdownOpen && ptBreakdown.length){
-    breakdownPanel.innerHTML = `
-      <div class="ma-breakdown-hdr">
-        <span>Placement types covered so far</span>
-        <button class="ma-breakdown-close" onclick="toggleMaBreakdown()" aria-label="Hide placement type breakdown">▲</button>
+    ${ptChipsHtml ? `<div class="ma-pt-row">${ptChipsHtml}</div>` : ''}
+    <div class="ma-actions-row">
+      <div class="ma-bar-right">
+        <span class="ma-status">${statusHtml}</span>
+        <span class="ma-divider"></span>
+        <span class="ma-count-inline">
+          <input type="number" id="maCount" class="ma-count-input" value="${maCount}" min="1" max="${remaining}" oninput="onMaCountChange()">
+          of ${remaining} placements to allocate
+        </span>
+        <button class="ma-btn-clear" onclick="clearMaSelections()">Clear All</button>
+        <button class="ma-btn-review" onclick="openMaReviewPanel()">Review &amp; Allocate</button>
       </div>
-      <div class="ma-breakdown-chips">
-        ${ptBreakdown.map(x=>`<span class="ma-pt-chip lg">${x.pt} · ${x.days} day${x.days!==1?'s':''}</span>`).join('')}
-      </div>`;
-    breakdownPanel.classList.add('show');
-  } else {
-    breakdownPanel.classList.remove('show');
-  }
+    </div>`;
 }
 let pendingAllocWardId = null, pendingAllocShift = null, pendingAllocAgency = null;
 
