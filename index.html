@@ -7618,6 +7618,13 @@ function navigateToAllocOptions(rid){
   // to the wrong calendar dates entirely.
   allocDateOffset = computeAllocDateOffset(r);
   allocDraftPlacements = allocDraftPlacements.filter(d=>d.reqId===rid); // keep only drafts for this req
+  // Multi-agency selections are scoped to a single in-progress roster build —
+  // nothing else clears this array on request or view-mode switches, so stale
+  // entries from earlier exploration (a different request, a wider Day/Week
+  // view before narrowing to Requested dates) were silently surviving and
+  // inflating later Select All totals, since Select All only overwrites the
+  // specific days it targets, not anything outside that set.
+  multiAgencySelections = [];
   allocStatusFilter = new Set(['pending']);
   document.getElementById('allocChipOpen')?.classList.add('active-chip');
   document.getElementById('allocChipOffered')?.classList.remove('active-chip');
@@ -11523,6 +11530,21 @@ function dedupMaSelections(){
   const byDay = new Map();
   multiAgencySelections.forEach(s=>byDay.set(s.dayIdx, s)); // later entries overwrite earlier ones for the same day
   multiAgencySelections = [...byDay.values()];
+
+  // Purge selections outside the current request's own roster days. Only
+  // applied when the request has a roster (r.cells/rosterShifts) — that's
+  // the one case where isDateInRange is a precise, complete validity check.
+  // Without this, a selection made on an off-roster day while in Day/Week
+  // view (where all 28 days are clickable) would silently survive narrowing
+  // to Requested dates, inflating later Select All / Planned Duration totals
+  // with days the request never actually asked for.
+  const focusR = REQ_META[currentAllocReqId];
+  if(focusR && (focusR.cells || focusR.rosterShifts)){
+    multiAgencySelections = multiAgencySelections.filter(s=>{
+      const d = new Date(BASE); d.setDate(d.getDate()+s.dayIdx);
+      return isDateInRange(d, focusR);
+    });
+  }
 }
 
 // Week mode — one unit selects a whole week at once, using the discipline's
