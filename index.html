@@ -944,6 +944,59 @@ body.rotation-mode #btnBuildRotation{display:none;}
 .alloc-badge-alloc{color:#555;}
 .alloc-badge-rejected{color:#555;}
 .alloc-badge-reassigned{color:#555;}
+
+/* ── Rebuilt process header (ph-*) — matches the real app's collapsed/expanded structure ── */
+.ph-identity{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.ph-req{font-size:13px;font-weight:700;color:#1976d2;}
+.ph-ep{font-size:15px;font-weight:700;color:#111827;margin:0;}
+.ph-status{font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px;white-space:nowrap;}
+.ph-status.tone-pending{background:#ede9fe;color:#6d28d9;}
+.ph-status.tone-offered{background:#dbeafe;color:#1e40af;}
+.ph-status.tone-published{background:#dcfce7;color:#166534;}
+.ph-status.tone-rejected{background:#fee2e2;color:#991b1b;}
+.ph-subline{display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280;margin-top:2px;flex-wrap:wrap;}
+.ph-subline .ph-dot{color:#d1d5db;}
+.ph-attrs{display:flex;gap:48px;margin-top:10px;flex-wrap:wrap;}
+.ph-group-label{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
+.ph-field{display:flex;gap:8px;font-size:12px;line-height:1.7;}
+.ph-field-label{color:#6b7280;min-width:90px;}
+.ph-field-value{color:#111827;font-weight:600;}
+.ph-comment{margin-top:10px;padding:8px 10px;background:#eff6ff;border-radius:5px;font-size:12px;}
+.ph-comment-head{display:flex;align-items:center;gap:6px;color:#1976d2;font-weight:600;font-size:11px;}
+.ph-comment-meta{color:#9ca3af;font-weight:400;margin-left:4px;}
+.ph-comment-body{color:#374151;margin-top:2px;}
+.ph-alloc-row{display:flex;align-items:center;gap:16px;margin-top:12px;padding-bottom:10px;}
+.allocation-progress{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.allocation-progress-bar{flex:1;max-width:220px;height:5px;border-radius:3px;background:#e5e7eb;overflow:hidden;}
+.allocation-progress-fill{display:block;height:100%;background:#9ca3af;}
+.allocation-progress-fill.tone-allocated{background:#1976d2;}
+.allocation-progress-text{font-size:11.5px;color:#6b7280;white-space:nowrap;}
+.ph-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.ph-btn{height:30px;padding:0 14px;border-radius:5px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:background .15s,box-shadow .15s;}
+.ph-btn-flat-primary{background:#1976d2;color:white;border:none;}
+.ph-btn-flat-primary:hover{background:#1662b0;}
+.ph-btn-outline-primary{background:white;color:#1976d2;border:1px solid #1976d2;}
+.ph-btn-outline-primary:hover{background:#eff6ff;}
+.ph-btn-outline-warn{background:white;color:#b91c1c;border:1px solid #b91c1c;}
+.ph-btn-outline-warn:hover{background:#fef2f2;}
+.ph-action-count{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:rgba(255,255,255,.28);font-size:10.5px;font-weight:700;}
+.ph-collapse-btn{background:none;border:1px solid #d1d5db;border-radius:5px;height:30px;padding:0 10px;font-family:inherit;font-size:11.5px;font-weight:600;color:#555;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.ph-collapse-btn:hover{background:#f5f5f5;}
+.ph-collapse-btn svg{transition:transform .15s;}
+.ph-collapse-btn.is-collapsed svg{transform:rotate(180deg);}
+/* Collapsed summary variant */
+.ph-summary{display:none;align-items:center;gap:16px;padding:8px 0;flex-wrap:wrap;}
+.ph-summary.show{display:flex;}
+.ph-summary-identity{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.ph-summary-identity .ph-req{font-size:12.5px;}
+.ph-summary-identity .ph-ep{font-size:13px;}
+.ph-summary-progress{width:160px;flex-shrink:0;}
+.ph-summary-progress .allocation-progress-text{font-size:11px;}
+.ph-summary .ph-subline{margin-top:0;flex-shrink:1;}
+.ph-summary .ph-actions{margin-left:auto;}
+/* Filters row — reuses .alloc-filter-bar styling, just shown/hidden by collapse state instead of a separate link */
+.ph-filters-row{display:none;}
+.ph-filters-row.show{display:block;}
 /* Comment bar */
 /* alloc-comment-bar moved inline to filter bar — no yellow style needed */
 
@@ -1398,6 +1451,7 @@ body.multi-agency-mode .ag-shift-cell:not(.wknd):hover::after{
 }
 .ag-shift-cell.ma-selected{ background:#dbeafe!important;outline:2px solid #1976d2;outline-offset:-2px;color:#1e40af!important;font-weight:700; }
 .ma-pt-label{font-size:11px;color:#6b7280;white-space:nowrap;}
+.ma-pt-info{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:#1976d2;color:white;font-size:10px;font-weight:700;font-style:normal;cursor:help;margin-right:5px;flex-shrink:0;}
 
 .ma-bottom-bar{
   position:fixed;left:0;right:0;bottom:0;z-index:60;background:white;border-top:1px solid #e5e7eb;
@@ -1431,6 +1485,8 @@ body.multi-agency-mode .ag-shift-cell:not(.wknd):hover::after{
 .ma-warn.overallocated{background:#fde047;color:#713f12;}
 .ma-count-inline{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:13px;color:#374151}
 .ma-count-input{width:34px;height:24px;border:1px solid #d1d5db;border-radius:4px;text-align:center;font-family:inherit;font-size:12.5px;font-weight:600;color:#111827}
+.ma-pt-select{height:28px;border:1px solid #d1d5db;border-radius:4px;padding:0 8px;font-family:inherit;font-size:12.5px;font-weight:600;color:#111827;background:white;cursor:pointer;max-width:180px;}
+.ma-pt-select:hover{border-color:#9ca3af;}
 .ma-todo{font-size:10px;color:#c2410c;background:#fff7ed;border:1px solid #fed7aa;border-radius:4px;padding:2px 7px;font-weight:500;white-space:nowrap}
 .ma-btn-exit{background:none;border:none;color:#6b7280;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;text-decoration:underline;padding:0 2px}
 .ma-btn-clear{height:32px;padding:0 14px;border:1px solid #1976d2;border-radius:5px;background:white;color:#1976d2;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
@@ -2780,81 +2836,142 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
     <span class="alloc-back-label" id="allocBreadcrumb"></span>
   </div>
 
-  <!-- Request context bar — 3 rows matching screenshot -->
-  <div class="alloc-req-bar">
-    <!-- Row 1: EP | Req# | Dates — left; Edit/Reassign/Reject — right -->
-    <div class="alloc-req-row1">
-      <div class="alloc-req-row1-left">
-        <span class="alloc-req-ep" id="allocEp"></span>
-        <span class="alloc-req-sep">|</span>
-        <span class="alloc-req-id" id="allocReqNum"></span>
-        <span class="alloc-req-sep">|</span>
-        <span class="alloc-dates-lbl" id="allocDatesLbl"></span>
-        <!-- Last comment — shown inline when request has a comment -->
-        <span class="alloc-req-sep" id="allocCommentSep" style="display:none">|</span>
-        <span id="allocCommentWrap" style="display:none;align-items:center;gap:3px;min-width:0;max-width:380px;">
-          <span id="allocLastComment" style="font-size:11px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;"></span>
-          <button id="allocCommentMoreBtn" onclick="toggleAllocCommentExpand()" style="display:none;background:none;border:none;color:#1976d2;font-size:11px;font-weight:500;cursor:pointer;padding:0;flex-shrink:0;white-space:nowrap;text-decoration:underline;">more</button>
-        </span>
+  <!-- Request context bar — rebuilt to match the real app's process-header structure -->
+  <div class="alloc-req-bar" id="phRoot">
+
+    <!-- ═══ EXPANDED variant ═══ -->
+    <div id="phExpanded">
+      <div class="ph-identity">
+        <span class="ph-req" id="phReq"></span>
+        <h2 class="ph-ep" id="phEp"></h2>
+        <span class="ph-status tone-pending" id="phStatus">Pending</span>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;position:relative;">
+      <div class="ph-subline">
+        <span id="phCampus"></span>
+        <span class="ph-dot">·</span>
+        <span id="phDates"></span>
+        <span class="ph-dot">·</span>
+        <span id="phDuration"></span>
+      </div>
+      <div class="ph-attrs">
+        <div class="ph-group">
+          <div class="ph-group-label">Request details</div>
+          <div class="ph-field"><span class="ph-field-label">Discipline</span><span class="ph-field-value" id="phDiscipline"></span></div>
+          <div class="ph-field"><span class="ph-field-label">Placement Type</span><span class="ph-field-value" id="phPlacementType"></span></div>
+          <div class="ph-field"><span class="ph-field-label">Year Level</span><span class="ph-field-value" id="phYearLevel"></span></div>
+        </div>
+        <div class="ph-group">
+          <div class="ph-group-label">Location &amp; schedule</div>
+          <div class="ph-field"><span class="ph-field-label">Region</span><span class="ph-field-value" id="phRegion"></span></div>
+          <div class="ph-field"><span class="ph-field-label">Agency</span><span class="ph-field-value" id="phAgency"></span></div>
+        </div>
+      </div>
+      <div class="ph-comment" id="phCommentBlock" style="display:none;">
+        <div class="ph-comment-head">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Last comment
+          <span class="ph-comment-meta" id="phCommentMeta"></span>
+        </div>
+        <div class="ph-comment-body" id="phCommentBody"></div>
+      </div>
+      <div class="ph-alloc-row">
+        <div class="allocation-progress">
+          <div class="allocation-progress-bar"><span class="allocation-progress-fill tone-allocated" id="phProgressFill" style="width:0%"></span></div>
+          <span class="allocation-progress-text" id="phProgressText"></span>
+        </div>
+        <div class="ph-actions" id="phActionsExpanded">
+          <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;cursor:pointer;margin-right:4px;">
+            <span>Multi-agency mode</span>
+            <span class="ae-toggle-switch" style="width:32px;height:18px;">
+              <input type="checkbox" id="maModeStartToggle" checked onchange="onMaModeStartToggleChange(this)">
+              <span class="ae-toggle-slider"></span>
+            </span>
+          </label>
+          <button class="ph-btn ph-btn-outline-primary" id="btnPrimaryAction" onclick="openAllocEditRequest()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <span id="btnPrimaryActionLabel">Edit Request</span>
+          </button>
+          <button class="ph-btn ph-btn-outline-primary" id="btnPhReassign" onclick="openAllocReassign()">Reassign</button>
+          <button class="ph-btn ph-btn-outline-warn" id="btnPhReject" onclick="openAllocReject()">Reject</button>
+          <button class="ph-btn ph-btn-flat-primary" id="btnAllocateRemaining" onclick="openMaReviewPanel()">
+            Allocate Remaining <span class="ph-action-count" id="phActionCount"></span>
+          </button>
+          <button class="btn-alloc-ellipsis" id="btnActionEllipsis" onclick="toggleActionMenu(event)" aria-haspopup="true" aria-expanded="false" title="More actions" aria-label="More actions">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+          </button>
+          <div id="actionMenuOverlay" style="display:none;position:fixed;inset:0;z-index:400;" onclick="closeActionMenu()"></div>
+          <div id="actionMenuDropdown" class="action-menu-dropdown" style="display:none;"></div>
+          <div style="display:none" id="buildRotDivider"></div>
+          <button class="btn-build-rotation" id="btnBuildRotation" onclick="startRotationFromHeader()" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+            Build Rotation
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ COLLAPSED summary variant ═══ -->
+    <div class="ph-summary" id="phSummary">
+      <div class="ph-summary-identity">
+        <span class="ph-req" id="phReqSum"></span>
+        <span class="ph-ep" id="phEpSum" style="font-size:13px;"></span>
+      </div>
+      <div class="ph-subline" style="margin-top:0;">
+        <span id="phCampusSum"></span>
+        <span class="ph-dot">·</span>
+        <span id="phDatesSum"></span>
+        <span class="ph-dot">·</span>
+        <span id="phDurationSum"></span>
+      </div>
+      <div class="ph-summary-progress">
+        <div class="allocation-progress">
+          <div class="allocation-progress-bar"><span class="allocation-progress-fill tone-allocated" id="phProgressFillSum" style="width:0%"></span></div>
+          <span class="allocation-progress-text" id="phProgressTextSum"></span>
+        </div>
+      </div>
+      <div class="ph-actions">
         <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#555;cursor:pointer;margin-right:4px;">
           <span>Multi-agency mode</span>
           <span class="ae-toggle-switch" style="width:32px;height:18px;">
-            <input type="checkbox" id="maModeStartToggle" checked onchange="onMaModeStartToggleChange(this)">
+            <input type="checkbox" id="maModeStartToggleSum" checked onchange="onMaModeStartToggleChange(this)">
             <span class="ae-toggle-slider"></span>
           </span>
         </label>
-        <button class="btn-alloc-action btn-alloc-primary" id="btnPrimaryAction" onclick="openAllocEditRequest()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          <span id="btnPrimaryActionLabel">Edit Request</span>
-        </button>
-        <button class="btn-alloc-ellipsis" id="btnActionEllipsis" onclick="toggleActionMenu(event)" aria-haspopup="true" aria-expanded="false" title="More actions" aria-label="More actions">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
-        </button>
-        <div id="actionMenuOverlay" style="display:none;position:fixed;inset:0;z-index:400;" onclick="closeActionMenu()"></div>
-        <div id="actionMenuDropdown" class="action-menu-dropdown" style="display:none;"></div>
-        <div style="display:none" id="buildRotDivider"></div>
-        <button class="btn-build-rotation" id="btnBuildRotation" onclick="startRotationFromHeader()" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
-          Build Rotation
-        </button>
+        <button class="ph-btn ph-btn-outline-primary" id="btnPhReassignSum" onclick="openAllocReassign()">Reassign</button>
+        <button class="ph-btn ph-btn-outline-warn" id="btnPhRejectSum" onclick="openAllocReject()">Reject</button>
+        <button class="ph-btn ph-btn-flat-primary" onclick="openMaReviewPanel()">Review &amp; Allocate</button>
       </div>
     </div>
 
-    <!-- Row 2: meta fields left, count badges right -->
-    <div class="alloc-req-row2">
-      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-        <div class="alloc-meta-fields" id="allocMetaRow"></div>
-        <span style="color:#d1d5db;font-size:11px;flex-shrink:0;">·</span>
-        <button onclick="toggleAllocFilterBar()" id="allocChangeFiltersBtn"
-          aria-expanded="false" aria-controls="allocFilterBarEl"
-          style="flex-shrink:0;background:none;border:none;color:#1976d2;font-size:11px;font-weight:500;cursor:pointer;padding:2px 0;white-space:nowrap;display:flex;align-items:center;gap:3px;text-decoration:underline;text-underline-offset:2px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-          Change filters
-        </button>
-      </div>
-      <div class="alloc-req-badges">
-        <span class="alloc-badge alloc-badge-status"     id="ctrStatus" title="">Pending</span>
-        <span class="alloc-badge alloc-badge-total"      id="ctrTotal">Total: —</span>
-        <span class="alloc-badge alloc-badge-rem"        id="ctrRemaining">Remaining: —</span>
-        <span class="alloc-badge alloc-badge-alloc"      id="ctrAllocated">Allocated: 0</span>
-        <span class="alloc-badge alloc-badge-rejected"   id="ctrRejected">Rejected: 0</span>
-        <span class="alloc-badge alloc-badge-reassigned" id="ctrReassigned">Reassigned: 0</span>
-      </div>
-    </div>
-
-    <!-- PROTOTYPE-ONLY: status switcher for requests with students, so Felix can be
-         shown every reachable status/action combination without manually driving
-         each request through the full flow. Hidden entirely for non-student requests. -->
+    <!-- PROTOTYPE-ONLY: status switcher for requests with students -->
     <div id="demoStatusSwitcher" style="display:none;margin:6px 0 0;padding:6px 8px;border:1px dashed #7c3aed;border-radius:4px;background:#faf5ff;font-size:11px;"></div>
 
-    <!-- Row 3: students — shown only when request has student data -->
+    <!-- Students row — shown only when request has student data -->
     <div class="alloc-req-row3" id="allocStudentsRow">
       <span class="alloc-req-row3-lbl">Students:</span>
       <span id="allocStudentsList"></span>
     </div>
+
+    <!-- Legacy badge elements — kept in the DOM (hidden) purely so the many
+         existing update calls scattered through the file keep firing without
+         needing to touch each one; their values now feed the progress bar
+         above instead of being displayed as separate pills. -->
+    <div style="display:none">
+      <span class="alloc-badge alloc-badge-status" id="ctrStatus"></span>
+      <span class="alloc-badge alloc-badge-total" id="ctrTotal"></span>
+      <span class="alloc-badge alloc-badge-rem" id="ctrRemaining"></span>
+      <span class="alloc-badge alloc-badge-alloc" id="ctrAllocated"></span>
+      <span class="alloc-badge alloc-badge-rejected" id="ctrRejected"></span>
+      <span class="alloc-badge alloc-badge-reassigned" id="ctrReassigned"></span>
+      <span id="allocEp"></span><span id="allocReqNum"></span><span id="allocDatesLbl"></span>
+      <span id="allocCommentSep"></span><span id="allocCommentWrap"></span>
+      <span id="allocLastComment"></span><button id="allocCommentMoreBtn"></button>
+      <div id="allocMetaRow"></div>
+    </div>
   </div>
+
+  <!-- Filters row — visible only when collapsed, replacing the old separate "Change filters" link -->
+  <!-- Filters row — visible only when collapsed, replacing the old separate "Change filters" link -->
 
   <!-- Rotation active banner — shown when rotation builder is active -->
   <div class="rotation-active-banner" id="rotationActiveBanner" style="display:none">
@@ -2863,7 +2980,7 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
 
   </div>
 
-  <!-- Filter bar — collapsed by default, expands on Change filters -->
+  <!-- Filter bar — now controlled by collapse state (visible when collapsed), not a separate link -->
   <div class="alloc-filter-bar" id="allocFilterBarEl" style="display:none;" role="region" aria-label="Allocation filters">
 
     <!-- Region — read only -->
@@ -2968,6 +3085,10 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
       <button class="ep-toggle-btn" id="allocEpToggleBtn" onclick="toggleEp('side')" style="display:flex;align-items:center;gap:5px;">
         <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
         EP Balance
+      </button>
+      <button class="ph-collapse-btn" id="phCollapseBtn" onclick="togglePhCollapse()">
+        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+        <span id="phCollapseBtnLabel">Collapse</span>
       </button>
     </div>
   </div>
@@ -3324,7 +3445,7 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
         <div class="sp-form-field">
           <label class="sp-form-label">Region <span class="req">*</span></label>
           <select class="sp-form-select sp-diff-input" id="spf-region" data-diff="region" onchange="checkDiff('region',this.value)">
-            <option>ACT Metropolitan Hospitals</option><option>Victoria</option><option>NSW</option>
+            <option>Victoria</option><option>Tulsa</option>
           </select>
           <span class="sp-diff-tag" data-diff-tag="region"></span>
         </div>
@@ -3357,7 +3478,7 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
           <div style="display:flex;gap:8px;">
             <input class="sp-form-input" id="spf-duration" type="number" min="1" value="8" style="width:80px;flex-shrink:0;">
             <select class="sp-form-select" id="spf-duration-unit" style="flex:1">
-              <option>Days</option><option>Weeks</option>
+              <option>Days</option><option>Weeks</option><option>Hours</option>
             </select>
           </div>
         </div>
@@ -7420,20 +7541,27 @@ function refreshAllocActionButtons(rid){
   const state = getEffectiveRequestState(rid);
 
   const statusBadge = document.getElementById('ctrStatus');
+  const colors = {
+    'Pending':            ['#dbeafe','#1e40af'],
+    'Allocated':          ['#ede9fe','#5b21b6'],
+    'Completed':          ['#dcfce7','#166534'],
+    'Rejected':           ['#fee2e2','#991b1b'],
+    'Withdrawn (EP)':     ['#f3f4f6','#374151'],
+    'Withdrawn (Student)':['#f3f4f6','#374151'],
+  };
+  const [bg,fg] = colors[state.label] || ['#f3f4f6','#374151'];
   if(statusBadge){
     statusBadge.textContent = state.label;
     statusBadge.title = state.tooltip || '';
-    const colors = {
-      'Pending':            ['#dbeafe','#1e40af'],
-      'Allocated':          ['#ede9fe','#5b21b6'],
-      'Completed':          ['#dcfce7','#166534'],
-      'Rejected':           ['#fee2e2','#991b1b'],
-      'Withdrawn (EP)':     ['#f3f4f6','#374151'],
-      'Withdrawn (Student)':['#f3f4f6','#374151'],
-    };
-    const [bg,fg] = colors[state.label] || ['#f3f4f6','#374151'];
     statusBadge.style.background = bg;
     statusBadge.style.color = fg;
+  }
+  const phStatus = document.getElementById('phStatus');
+  if(phStatus){
+    phStatus.textContent = state.label;
+    phStatus.title = state.tooltip || '';
+    phStatus.style.background = bg;
+    phStatus.style.color = fg;
   }
 
   // Edit Request is always available, regardless of status — confirmed: even
@@ -7496,6 +7624,15 @@ function refreshAllocActionButtons(rid){
   }
   if(showReassign) menuItems.push({label:'Reassign', onclick:'openAllocReassign()'});
   if(rejectLabel)  menuItems.push({label:rejectLabel, onclick:'openAllocReject()'});
+  // Header's own Reassign/Reject buttons — same conditions as the ellipsis
+  // menu items above, since they're the same underlying actions just surfaced
+  // as primary buttons instead of being tucked away.
+  ['btnPhReassign','btnPhReassignSum'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.style.display = showReassign ? '' : 'none';
+  });
+  ['btnPhReject','btnPhRejectSum'].forEach(id=>{
+    const el = document.getElementById(id); if(el){ el.style.display = rejectLabel ? '' : 'none'; el.textContent = rejectLabel || 'Reject'; }
+  });
   // Always available on any request — the coordinator's own choice, not gated by
   // placement type. Confirmed with Felix (24 Aug): "the decision here is user
   // wants to create a multi-agency placement rather than is the placement type
@@ -7521,6 +7658,8 @@ function toggleMultiAgencyMode(rid){
   multiAgencyMode = !multiAgencyMode;
   const maStartToggle = document.getElementById('maModeStartToggle');
   if(maStartToggle) maStartToggle.checked = multiAgencyMode; // keep header toggle in sync regardless of entry point
+  const maStartToggleSum = document.getElementById('maModeStartToggleSum');
+  if(maStartToggleSum) maStartToggleSum.checked = multiAgencyMode; // collapsed variant's own copy of the same toggle
   const agRows = document.getElementById('agRows');
   const gbSelect = document.getElementById('allocGroupBySelect');
   if(multiAgencyMode){
@@ -7602,6 +7741,66 @@ function computeAllocDateOffset(r){
   return 0;
 }
 
+// Feeds the new progress bar (both expanded and collapsed variants) from the
+// same qty/allocated numbers the old badge pills used — called everywhere
+// those badges were being updated, so the bar never falls out of sync with
+// whatever the legacy counters (kept hidden, not removed) still track.
+function updatePhProgress(r, allocatedOverride){
+  if(!r) return;
+  const total = r.qty || 0;
+  const allocated = allocatedOverride !== undefined ? allocatedOverride : (r.allocated || 0);
+  const pct = total > 0 ? Math.round((allocated/total)*100) : 0;
+  const label = `${allocated} / ${total} placement${total===1?'':'s'} processed (${pct}%)`;
+  const fill1 = document.getElementById('phProgressFill');
+  const fill2 = document.getElementById('phProgressFillSum');
+  const txt1 = document.getElementById('phProgressText');
+  const txt2 = document.getElementById('phProgressTextSum');
+  if(fill1) fill1.style.width = pct + '%';
+  if(fill2) fill2.style.width = pct + '%';
+  if(txt1) txt1.textContent = label;
+  if(txt2) txt2.textContent = label;
+  const count = document.getElementById('phActionCount');
+  if(count) count.textContent = Math.max(0, total - allocated);
+}
+
+// Collapse/expand — shared by the manual button AND the scroll-triggered
+// auto-collapse below, so both paths stay perfectly in sync rather than
+// fighting each other with separate state.
+let phCollapsed = false;
+function setPhCollapsed(collapsed){
+  if(collapsed === phCollapsed) return;
+  phCollapsed = collapsed;
+  const expanded = document.getElementById('phExpanded');
+  const summary = document.getElementById('phSummary');
+  const filters = document.getElementById('allocFilterBarEl');
+  const btn = document.getElementById('phCollapseBtn');
+  const lbl = document.getElementById('phCollapseBtnLabel');
+  if(expanded) expanded.style.display = phCollapsed ? 'none' : '';
+  if(summary) summary.classList.toggle('show', phCollapsed);
+  if(filters) filters.style.display = phCollapsed ? 'flex' : 'none';
+  if(btn) btn.classList.toggle('is-collapsed', phCollapsed);
+  if(lbl) lbl.textContent = phCollapsed ? 'Expand' : 'Collapse';
+  const mainToggle = document.getElementById('maModeStartToggle');
+  const sumToggle = document.getElementById('maModeStartToggleSum');
+  if(mainToggle && sumToggle) sumToggle.checked = mainToggle.checked;
+}
+function togglePhCollapse(){
+  setPhCollapsed(!phCollapsed);
+}
+// Auto-collapse on scroll, matching the real app: scrolling the grid down
+// even a little collapses the header to free up vertical space; scrolling
+// back to the very top restores it. The manual button still works at any
+// scroll position — it just gets overridden again on the next scroll event,
+// same as production.
+(function initPhScrollCollapse(){
+  const grid = document.getElementById('allocGridWrap');
+  if(!grid) return;
+  const SCROLL_THRESHOLD = 8;
+  grid.addEventListener('scroll', () => {
+    setPhCollapsed(grid.scrollTop > SCROLL_THRESHOLD);
+  }, { passive: true });
+})();
+
 function navigateToAllocOptions(rid){
   try {
 
@@ -7625,6 +7824,7 @@ function navigateToAllocOptions(rid){
   // inflating later Select All totals, since Select All only overwrites the
   // specific days it targets, not anything outside that set.
   multiAgencySelections = [];
+  maPlacementType = r?.type || null; // reset to this request's own placement type on open
   allocStatusFilter = new Set(['pending']);
   document.getElementById('allocChipOpen')?.classList.add('active-chip');
   document.getElementById('allocChipOffered')?.classList.remove('active-chip');
@@ -7688,6 +7888,40 @@ function navigateToAllocOptions(rid){
   document.getElementById('allocEp').textContent = r.ep + (r.campus ? ' · ' + r.campus : '');
   document.getElementById('allocDatesLbl') && (document.getElementById('allocDatesLbl').textContent = r.dates);
   updateAllocDateRangeLabel();
+
+  // ── Rebuilt header (ph-*) — identity, subline, attrs, comment ──
+  // Populates both the expanded block and the collapsed summary variant from
+  // the same request data, so switching between them never shows stale info.
+  const reqNumTxt = r.reqNum || r.id;
+  const epTxt = r.ep || '';
+  ['phReq','phReqSum'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = reqNumTxt; });
+  ['phEp','phEpSum'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = epTxt; });
+  ['phCampus','phCampusSum'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = r.campus || ''; });
+  ['phDates','phDatesSum'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = r.dates || ''; });
+  ['phDuration','phDurationSum'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = r.dur || ''; });
+  const phDisc = document.getElementById('phDiscipline'); if(phDisc) phDisc.textContent = r.discipline || '—';
+  const phPt = document.getElementById('phPlacementType'); if(phPt) phPt.textContent = r.type || '—';
+  const phYear = document.getElementById('phYearLevel'); if(phYear) phYear.textContent = r.year || '—';
+  const phAg = document.getElementById('phAgency'); if(phAg) phAg.textContent = r.agencyName || '—';
+  // Region — same source of truth as the filter bar's own region label (no
+  // request in this dataset has a real .region field; the active grid region
+  // via fRegion is the correct source, same fix as the side panel's region field)
+  const _phRegionVal = document.getElementById('fRegion')?.value === 'tulsa' ? 'Tulsa, Oklahoma' : 'Victoria';
+  const phReg = document.getElementById('phRegion'); if(phReg) phReg.textContent = _phRegionVal;
+  // Comment block — only shown when the request actually has a last comment
+  const phCommentBlock = document.getElementById('phCommentBlock');
+  if(phCommentBlock){
+    if(r.comment){
+      phCommentBlock.style.display = '';
+      const meta = document.getElementById('phCommentMeta');
+      if(meta) meta.textContent = r.commentAuthor && r.commentDate ? `${r.commentAuthor} · ${r.commentDate}` : '';
+      const body = document.getElementById('phCommentBody');
+      if(body) body.textContent = r.comment;
+    } else {
+      phCommentBlock.style.display = 'none';
+    }
+  }
+  updatePhProgress(r);
 
   // Counters
   const alloc = r.allocated || 0;
@@ -7872,6 +8106,7 @@ function refreshCounters(){
   document.getElementById('ctrRemaining') && (document.getElementById('ctrRemaining').textContent = `Remaining: ${open}`);
   document.getElementById('ctrAllocated') && (document.getElementById('ctrAllocated').textContent = draftedQty > 0 ? `Drafted: ${draftedQty}` : `Allocated: ${generatedQty}`);
   document.getElementById('ctrRejected')  && (document.getElementById('ctrRejected').textContent  = `Rejected: 0`);
+  updatePhProgress(r, draftedQty + generatedQty);
 }
 
 /* ─── ALLOCATION SCREEN STATE ──────────────────────── */
@@ -8922,6 +9157,8 @@ function renderAgencyBlock(ag, focusReq, depth, isPinned){
       (ag.shifts||[]).forEach(s=>{
         const parts = s.full ? s.full.split('|') : [s.label||s.full];
         const shiftName = parts[0]?.trim() || s.label;
+        const shiftDiscipline = parts[1]?.trim() || '';
+        if(multiAgencyMode && focusReq && focusReq.discipline && shiftDiscipline && shiftDiscipline !== focusReq.discipline) return;
         const shiftMeta = parts.slice(1).map(p=>p.trim()).filter(Boolean).join(' | ');
         const fullLabel = shiftMeta ? `${shiftName} | ${shiftMeta}` : shiftName;
         const shiftRowId = ag.id + '-' + shiftName.replace(/\W+/g,'_');
@@ -10059,7 +10296,55 @@ function _setupSpFieldsForCurrentGroup(){
   // Populate Placement Details fields from request defaults
   const setVal = (id, val) => { const el = document.getElementById(id); if(el && val) el.value = val; };
   setVal('spf-discipline', r.discipline || '');
-  setVal('spf-yearlevel',  r.year || '');
+  // Year level data isn't consistently formatted across the dataset (Yr 2/Yr 3,
+  // Year 2/Year 3, and US-style Junior/Senior/4th Semester for Tulsa requests),
+  // but this field only ever had 4 fixed AU-style options — any request using
+  // a different format silently failed to select anything (blank), rather
+  // than showing the wrong-but-visible value. Add the real value as an option
+  // if it isn't already one, same approach as the placement-type field above.
+  const yearEl = document.getElementById('spf-yearlevel');
+  if(yearEl && r.year){
+    const hasOption = [...yearEl.options].some(o=>o.value===r.year);
+    if(!hasOption) yearEl.add(new Option(r.year, r.year));
+    yearEl.value = r.year;
+  }
+  // spf-duration was hardcoded to 8, and spf-duration-unit was never
+  // assigned at all — always silently showed "8 Days" regardless of the
+  // request's actual duration, which ranges from "8 hours" to "15 weeks"
+  // across this dataset. Parse the request's own duration string instead.
+  const durMatch = /^(\d+)\s*(day|week|hour)/i.exec(r.dur || '');
+  if(durMatch){
+    const durInput = document.getElementById('spf-duration');
+    const durUnitEl = document.getElementById('spf-duration-unit');
+    if(durInput) durInput.value = durMatch[1];
+    if(durUnitEl) durUnitEl.value = durMatch[2][0].toUpperCase() + durMatch[2].slice(1).toLowerCase() + 's';
+  }
+  // spf-region was never assigned a value anywhere — always silently showed
+  // its first hardcoded option (previously "ACT Metropolitan Hospitals")
+  // regardless of which region the grid was actually in. No request record
+  // has a real .region field in this dataset, so the correct source of truth
+  // is the same active-region logic the grid itself uses, not the request.
+  const regionEl = document.getElementById('spf-region');
+  if(regionEl){
+    const isTulsaRegion = document.getElementById('fRegion')?.value === 'tulsa';
+    regionEl.value = isTulsaRegion ? 'Tulsa' : 'Victoria';
+  }
+  // spf-placementtype was a static <select> with a fixed, unrelated option
+  // list (Aged Care/General/Surgical/Emergency) and no value ever assigned —
+  // it always silently showed its first hardcoded option regardless of the
+  // request or what was chosen upstream. Rebuild its options from the full
+  // canonical list so whatever value we set is guaranteed to be selectable,
+  // then set it from this group's draft (multi-agency) or the request's own
+  // type (single-agency default) — never leave it on the stale hardcoded default.
+  const ptSelectEl = document.getElementById('spf-placementtype');
+  if(ptSelectEl){
+    const groupPt = spAgGroups[spAgIdx]?.drafts?.[0]?.placementType;
+    const resolvedPt = groupPt || r.type || '';
+    const ptOpts = new Set(ALLOC_PT_OPTIONS);
+    if(resolvedPt) ptOpts.add(resolvedPt); // never drop the actual value even if outside the canonical list
+    ptSelectEl.innerHTML = [...ptOpts].sort((a,b)=>a.localeCompare(b))
+      .map(pt=>`<option${pt===resolvedPt?' selected':''}>${pt}</option>`).join('');
+  }
   if(r.startDate) setVal('spf-startdate', r.startDate);
   if(r.endDate)   setVal('spf-enddate',   r.endDate);
   // Agency: pre-populate with DRAFTED agency (the one coordinator clicked Allocate on)
@@ -11454,6 +11739,15 @@ let fulfillmentMode = null; // null | 'standard' | 'rotation'
 let multiAgencyMode = false; // entry point: kebab menu "Allocate across agencies", available on any request, no placement-type gate
 let multiAgencySelections = []; // [{agId, agName, shiftName, dayIdx}] — dayIdx is absolute (relative to BASE), survives date-window paging
 let maCount = 1; // placements to allocate this round, defaults to remaining, editable, independent of the day tally
+// Placement type the generated placement(s) will actually have. Defaults to
+// the request's own type on open, never blank. Deliberately NOT validated
+// against which agencies are currently selected — per Felix (4 Sep), the
+// placement generates with whatever was chosen even if a later agency change
+// means no selected agency actually offers it. The dropdown's option LIST
+// still narrows to selected agencies' types (getMaPlacementTypeOptions), but
+// the current value always stays selectable so a choice already made is
+// never silently reset.
+let maPlacementType = null;
 
 // Illustrative only — this file has no real "which placement types does this
 // agency support" data model yet. Confirmed with Felix (31 Aug): a selected
@@ -11479,6 +11773,27 @@ function getMaPlacementTypesForAgency(agId){
   let hash = 0;
   for(let i=0;i<agId.length;i++) hash = (hash*31 + agId.charCodeAt(i)) >>> 0;
   return [MA_PT_FALLBACK_POOL[hash % MA_PT_FALLBACK_POOL.length]];
+}
+
+// Options for the placement-type selector: the request's own type (always,
+// so there's a sensible default even before any cell is selected), every
+// placement type offered by currently selected agencies, and — critically —
+// whatever is currently chosen even if no longer offered, so an earlier
+// choice never gets silently dropped from the list out from under the user.
+function getMaPlacementTypeOptions(){
+  const r = REQ_META[currentAllocReqId];
+  const opts = new Set();
+  if(maPlacementType) opts.add(maPlacementType);
+  if(r && r.type) opts.add(r.type);
+  multiAgencySelections.forEach(s=>{
+    getMaPlacementTypesForAgency(s.agId).forEach(pt=>opts.add(pt));
+  });
+  return [...opts].sort((a,b)=>a.localeCompare(b));
+}
+
+function onMaPlacementTypeChange(){
+  const sel = document.getElementById('maPlacementType');
+  if(sel && sel.value) maPlacementType = sel.value;
 }
 
 function computeMaPtBreakdown(){
@@ -11764,11 +12079,11 @@ function openMaReviewPanel(){
       agName: ag ? ag.name : (r?.agencyName || ''),
       shiftLabel: 'Any Shift',
       qty: maCount,
+      placementType: maPlacementType || r?.type || '',
       status: 'draft',
       dates: r?.dates
     });
     if(r) r.allocated = (r.allocated||0) + maCount;
-    toggleMultiAgencyMode(rid);
     openPanel();
     return;
   }
@@ -11791,6 +12106,7 @@ function openMaReviewPanel(){
     // under just one of them).
     shiftLabel: 'Any Shift',
     qty: maCount,
+    placementType: maPlacementType || r?.type || '',
     dates: `${fmt(firstDate)} – ${fmt(lastDate)}`,
     status: 'draft',
     isMultiAgency: true,
@@ -11800,7 +12116,11 @@ function openMaReviewPanel(){
   // shrinks for the next group, since it's computed from r.allocated.
   if(r) r.allocated = (r.allocated||0) + maCount;
 
-  toggleMultiAgencyMode(rid); // exits the mode and cleans up, now that the draft is captured
+  // Mode is retained here deliberately — was previously reset to single-agency
+  // the instant a draft was captured (before the panel even opened), which
+  // silently changed the coordinator's chosen state without them asking for
+  // it, and meant re-enabling multi-agency mode by hand before every
+  // subsequent placement in a multi-placement request.
   openPanel();
 }
 
@@ -11838,7 +12158,7 @@ function updateMaBar(){
   // just show it as they're actioning."
   const ptBreakdown = days > 0 ? computeMaPtBreakdown() : [];
   const ptChipsHtml = ptBreakdown.length
-    ? `<span class="ma-pt-label">Agency placement types selected</span> ${ptBreakdown.map(x=>`<span class="ma-pt-chip">${x.pt} · ${x.days}</span>`).join('')}`
+    ? `<span class="ma-pt-info" title="Shows placement types offered by selected agencies — doesn't change the placement type">i</span><span class="ma-pt-label">Placement types across agencies</span> ${ptBreakdown.map(x=>`<span class="ma-pt-chip">${x.pt} · ${x.days}</span>`).join('')}`
     : '';
 
   // Read-only info (placement types, then duration) grouped on the left;
@@ -11848,12 +12168,19 @@ function updateMaBar(){
   // many placement types, they wrap to further lines rather than squeezing
   // or overflowing the actions row (count/buttons), which always stays on
   // one line.
+  if(!maPlacementType) maPlacementType = r?.type || null;
+  const ptOptions = getMaPlacementTypeOptions();
+  const ptSelectHtml = `<span class="ma-count-inline"><span class="ma-duration-label">Allocated placement type</span><select id="maPlacementType" class="ma-pt-select" onchange="onMaPlacementTypeChange()" title="Placement type this placement will be generated with">
+    ${ptOptions.map(pt=>`<option value="${pt}"${pt===maPlacementType?' selected':''}>${pt}</option>`).join('')}
+  </select></span>`;
+
   bar.innerHTML = `
     ${ptChipsHtml ? `<div class="ma-pt-row">${ptChipsHtml}</div>` : ''}
     <div class="ma-actions-row">
       <div class="ma-bar-right">
         <span class="ma-status">${statusHtml}</span>
         <span class="ma-divider"></span>
+        ${ptSelectHtml}
         <span class="ma-count-inline">
           <input type="number" id="maCount" class="ma-count-input" value="${maCount}" min="1" max="${remaining}" oninput="onMaCountChange()">
           of ${remaining} placements to allocate
