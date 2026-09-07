@@ -11845,21 +11845,6 @@ function dedupMaSelections(){
   const byDay = new Map();
   multiAgencySelections.forEach(s=>byDay.set(s.dayIdx, s)); // later entries overwrite earlier ones for the same day
   multiAgencySelections = [...byDay.values()];
-
-  // Purge selections outside the current request's own roster days. Only
-  // applied when the request has a roster (r.cells/rosterShifts) — that's
-  // the one case where isDateInRange is a precise, complete validity check.
-  // Without this, a selection made on an off-roster day while in Day/Week
-  // view (where all 28 days are clickable) would silently survive narrowing
-  // to Requested dates, inflating later Select All / Planned Duration totals
-  // with days the request never actually asked for.
-  const focusR = REQ_META[currentAllocReqId];
-  if(focusR && (focusR.cells || focusR.rosterShifts)){
-    multiAgencySelections = multiAgencySelections.filter(s=>{
-      const d = new Date(BASE); d.setDate(d.getDate()+s.dayIdx);
-      return isDateInRange(d, focusR);
-    });
-  }
 }
 
 // Week mode — one unit selects a whole week at once, using the discipline's
