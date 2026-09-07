@@ -9158,7 +9158,13 @@ function renderAgencyBlock(ag, focusReq, depth, isPinned){
         const parts = s.full ? s.full.split('|') : [s.label||s.full];
         const shiftName = parts[0]?.trim() || s.label;
         const shiftDiscipline = parts[1]?.trim() || '';
-        if(multiAgencyMode && focusReq && focusReq.discipline && shiftDiscipline && shiftDiscipline !== focusReq.discipline) return;
+        // Discipline filtering applies by default in both single- and
+        // multi-agency mode — the real app's default state is single-
+        // discipline too, only broadening when the discipline filter is
+        // manually widened. This prototype doesn't build that filter-driven
+        // broadening, so the default (unfiltered) state is aligned to match
+        // reality rather than showing every discipline unconditionally.
+        if(focusReq && focusReq.discipline && shiftDiscipline && shiftDiscipline !== focusReq.discipline) return;
         const shiftMeta = parts.slice(1).map(p=>p.trim()).filter(Boolean).join(' | ');
         const fullLabel = shiftMeta ? `${shiftName} | ${shiftMeta}` : shiftName;
         const shiftRowId = ag.id + '-' + shiftName.replace(/\W+/g,'_');
