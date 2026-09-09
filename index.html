@@ -12039,7 +12039,15 @@ function applyMaCapacityHighlight(){
   document.querySelectorAll('#agRows .ag-shift-cell:not(.wknd)').forEach(cell=>{
     if(cell.classList.contains('ma-selected')) return; // selected state takes visual priority
     if(targetCount <= 0) return; // nothing left to allocate — no highlight is correct, not a floor of 1
-    const val = parseInt(cell.textContent.trim());
+    // Read only the cell's own leading text node — its capacity number is
+    // written as plain text before any child elements (the placement-summary
+    // popover, appended after). Using the full textContent here was also
+    // picking up that popover's hidden text (e.g. "3× Offered ... View
+    // placements") and misparsing its leading digit as a capacity value,
+    // wrongly highlighting cells that have no real capacity number at all
+    // (e.g. Orientation, which is deliberately blank every day).
+    const leadingText = cell.childNodes[0]?.nodeType === Node.TEXT_NODE ? cell.childNodes[0].textContent : '';
+    const val = parseInt(leadingText.trim());
     if(isNaN(val) || val<=0) return; // zero or negative — no highlight, matches "we just don't highlight" (Felix, 24 Aug)
     if(val >= targetCount){
       cell.classList.add('ma-cap-fit');
