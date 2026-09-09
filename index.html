@@ -956,7 +956,7 @@ body.rotation-mode #btnBuildRotation{display:none;}
 .ph-status.tone-rejected{background:#fee2e2;color:#991b1b;}
 .ph-subline{display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280;margin-top:2px;flex-wrap:wrap;}
 .ph-subline .ph-dot{color:#d1d5db;}
-.ph-attrs{display:flex;gap:48px;margin-top:10px;flex-wrap:wrap;}
+.ph-attrs{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:10px;}
 .ph-group-label{font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
 .ph-field{display:flex;gap:8px;font-size:12px;line-height:1.7;}
 .ph-field-label{color:#6b7280;min-width:90px;}
@@ -7667,7 +7667,7 @@ function toggleMultiAgencyMode(rid){
     agRows?.addEventListener('mousedown', onMaCellMouseDown);
     agRows?.addEventListener('mouseover', onMaCellMouseOver);
     document.addEventListener('mouseup', onMaCellMouseUp);
-    { const r0 = REQ_META[rid]; maCount = r0 ? Math.max(1, (r0.qty||1) - (r0.allocated||0)) : 1; }
+    { const r0 = REQ_META[rid]; maCount = r0 ? Math.max(0, (r0.qty||0) - (r0.allocated||0)) : 0; }
     // Lock Group By to Shift — every click must resolve to Agency + Shift + Date.
     // Locked, not just defaulted: whatever grouping was in use before entering
     // this mode is overridden and the control is disabled for the duration.
@@ -9171,7 +9171,7 @@ function renderAgencyBlock(ag, focusReq, depth, isPinned){
         html += `<div class="ag-shift" id="ward-${shiftRowId}" data-agid="${ag.id}" data-shiftname="${shiftName.replace(/"/g,'&quot;')}" data-shiftfull="${(s.full||shiftName).replace(/"/g,'&quot;')}" style="cursor:default">
           <div class="ag-shift-left" id="rowleft-${shiftRowId}" style="padding-left:${pad+18}px">
             <span class="ag-shift-name" title="${s.full||shiftName}">${fullLabel}</span>
-            <button class="ma-select-all-btn" onclick="event.stopPropagation();selectAllMaRow(this)">Select all</button>
+            <button class="ma-select-all-btn" onclick="event.stopPropagation();selectAllMaRow(this)" ${maHasRemainingCapacity() ? '' : 'style="display:none;"'}>Select all</button>
           </div>
           ${renderAllocCells(s.caps, focusReq, 'ag-shift-cell', ag.id)}
         </div>`;
@@ -10681,6 +10681,14 @@ function _executeGenerate(type){
       d.rosterShift = null;
     }
   });
+  // The just-generated roster has been consumed into a real placement —
+  // clear the working multi-agency selection and reset the bottom bar, same
+  // fix as in generatePlacements(), applied here too since this is the
+  // function the real Allocate & Publish / Allocate as planned buttons
+  // actually call. Does not touch multiAgencyMode itself.
+  if(group.drafts.some(d=>d.isMultiAgency)){
+    multiAgencySelections = [];
+  }
   // Remove from group list
   spAgGroups.splice(spAgIdx, 1);
 
@@ -10689,6 +10697,7 @@ function _executeGenerate(type){
   renderPlacementRail();
   updateBottomBar();
   refreshCounters();
+  if(multiAgencyMode) updateMaBar(); // reflect the just-cleared selection / fully-allocated state
   // Re-fire availability highlight — capacity has changed after finalising placement
   setTimeout(()=>runAvailabilityHighlight(), 60);
   // Reflect the real, computed status now that a group has actually been confirmed
@@ -11730,11 +11739,21 @@ function generatePlacements(type){
     return;
   }
 
+  // The just-generated roster has been consumed into a real placement —
+  // clear the working selection and reset the bottom bar so stale cell
+  // highlighting and tally don't linger after Offer/Publish. This does NOT
+  // touch multiAgencyMode itself (that's the earlier, deliberate fix — mode
+  // stays whatever the coordinator chose). Cancel (closePanel without
+  // calling generatePlacements) is untouched and still preserves selections.
+  if(drafts.some(d=>d.isMultiAgency)){
+    multiAgencySelections = [];
+  }
   closePanel();
   renderAllocRows(currentAllocReqId);
   renderPlacementRail();
   updateBottomBar();
   refreshCounters();
+  if(multiAgencyMode) updateMaBar();
 }
 
 
@@ -11875,8 +11894,20 @@ function getMaTargetDays(info, i){
   return [allocDateOffset + i];
 }
 
+// Shared guard: is there anything left to allocate on the current request?
+// Once remaining hits 0, the grid shouldn't accept new selections at all —
+// without this, Select All and cell clicks kept working indefinitely even
+// on a fully-allocated request, letting a coordinator build a selection
+// that could never actually be generated into anything.
+function maHasRemainingCapacity(){
+  const r = REQ_META[currentAllocReqId];
+  if(!r) return false;
+  return (r.qty||0) - (r.allocated||0) > 0;
+}
+
 function onMaCellMouseDown(e){
   if(!multiAgencyMode) return;
+  if(!maHasRemainingCapacity()) return;
   const cell = e.target.closest('.ag-shift-cell');
   if(!cell || cell.classList.contains('wknd')) return;
   const info = resolveMaCellInfo(cell);
@@ -11926,6 +11957,7 @@ function onMaCellMouseUp(){
 
 function selectAllMaRow(btn){
   if(!multiAgencyMode) return;
+  if(!maHasRemainingCapacity()) return;
   const shiftRowEl = btn.closest('.ag-shift');
   if(!shiftRowEl) return;
   const cells = [...shiftRowEl.querySelectorAll('.ag-shift-cell')];
@@ -12003,9 +12035,10 @@ function applyMaCapacityHighlight(){
   // request's own remaining placement count, fixed.
   const r = REQ_META[currentAllocReqId];
   if(!r) return;
-  const targetCount = multiAgencyMode ? maCount : Math.max(1, (r.qty||1) - (r.allocated||0));
+  const targetCount = multiAgencyMode ? maCount : Math.max(0, (r.qty||0) - (r.allocated||0));
   document.querySelectorAll('#agRows .ag-shift-cell:not(.wknd)').forEach(cell=>{
     if(cell.classList.contains('ma-selected')) return; // selected state takes visual priority
+    if(targetCount <= 0) return; // nothing left to allocate — no highlight is correct, not a floor of 1
     const val = parseInt(cell.textContent.trim());
     if(isNaN(val) || val<=0) return; // zero or negative — no highlight, matches "we just don't highlight" (Felix, 24 Aug)
     if(val >= targetCount){
@@ -12044,9 +12077,9 @@ function onMaCountChange(){
   const el = document.getElementById('maCount');
   if(!el) return;
   const r = REQ_META[currentAllocReqId];
-  const remaining = r ? Math.max(1, (r.qty||1) - (r.allocated||0)) : 1;
-  let n = parseInt(el.value)||1;
-  n = Math.max(1, Math.min(remaining, n));
+  const remaining = r ? Math.max(0, (r.qty||0) - (r.allocated||0)) : 0;
+  let n = parseInt(el.value)||0;
+  n = remaining > 0 ? Math.max(1, Math.min(remaining, n)) : 0;
   el.value = n;
   maCount = n;
   applyMaCapacityHighlight(); // live recalculation the instant the count changes
@@ -12127,8 +12160,23 @@ function updateMaBar(){
   }
   const r = REQ_META[currentAllocReqId];
   const durDays = r ? (parseInt(r.dur) || 0) : 0;
-  const remaining = r ? Math.max(1, (r.qty||1) - (r.allocated||0)) : 1;
+  const remaining = r ? Math.max(0, (r.qty||0) - (r.allocated||0)) : 0;
   const days = multiAgencySelections.length;
+
+  // Once nothing is left to allocate, don't show the normal builder UI at
+  // all — previously the grid and this bar both stayed fully interactive
+  // indefinitely, letting a coordinator build a selection that could never
+  // actually be generated into anything, with a stale placeholder count
+  // (an artificial floor of 1) masking the fact that 0 actually remained.
+  if(remaining <= 0){
+    bar.innerHTML = `
+      <div class="ma-actions-row">
+        <div class="ma-bar-right">
+          <span class="ma-status" style="color:#166534;">✓ All placements for this request have been allocated</span>
+        </div>
+      </div>`;
+    return;
+  }
 
   let statusHtml;
   if(days===0){
