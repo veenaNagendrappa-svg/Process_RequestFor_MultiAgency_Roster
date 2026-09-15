@@ -1303,7 +1303,7 @@ body.rotation-mode #btnBuildRotation{display:none;}
 /* Alloc grid */
 .alloc-grid-wrap{flex:1;overflow:auto;background:white;min-width:0;}
 .ag-col-header{display:flex;background:#fafafa;border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:3 !important}
-.ag-col-left{width:220px;min-width:220px;padding:6px 10px;font-size:13px;font-weight:600;color:#003179;border-right:2px solid #ddd;position:sticky;left:0;background:#fafafa;z-index:4}
+.ag-col-left{width:260px;min-width:260px;padding:6px 10px;font-size:13px;font-weight:600;color:#003179;border-right:2px solid #ddd;position:sticky;left:0;background:#fafafa;z-index:4}
 .ag-col-right{flex:1;display:flex}
 .ag-th{width:46px;min-width:46px;text-align:center;padding:4px 2px;font-size:11px;border-right:1px solid #e8e8e8;background:#fafafa}
 .ag-th .dd{display:block;font-size:11px;font-weight:600;color:#003179}
@@ -1322,7 +1322,7 @@ body.rotation-mode #btnBuildRotation{display:none;}
 /* Region heading row — Process Request allocation grid. Non-interactive, rollup numbers only. No badge here — badge placement rules live on the facility/agency or region row per CPN-15699 (5a). */
 .ag-region-row{display:flex;align-items:stretch;border-bottom:2px solid #ddd;background:#fafafa;cursor:default}
 .ag-region-left{
-  width:220px;min-width:220px;padding:6px 10px;display:flex;align-items:center;gap:5px;
+  width:260px;min-width:260px;padding:6px 10px;display:flex;align-items:center;gap:5px;
   border-right:2px solid #ddd;position:sticky;left:0;background:#fafafa;z-index:5;
 }
 .ag-region-lbl{font-size:13px;font-weight:700;color:#003179;}
@@ -1344,14 +1344,14 @@ body.rotation-mode #btnBuildRotation{display:none;}
 .ag-row.depth-2 .ag-lbl{font-size:11.5px;color:#2c5f9e;}
 .ag-row.depth-3 .ag-lbl{font-size:11px;color:#3a6fae;}
 .ag-row-left{
-  width:220px;min-width:220px;padding:5px 8px;display:flex;align-items:flex-start;
+  width:260px;min-width:260px;padding:5px 8px;display:flex;align-items:center;
   gap:5px;border-right:2px solid #ddd;position:sticky;left:0;background:inherit;z-index:5;
 }
 .ag-expand{width:14px;height:14px;border:none;background:none;cursor:pointer;color:#555;flex-shrink:0;padding:0}
 .ag-expand svg{width:13px;height:13px;fill:currentColor;transition:transform .15s}
 .ag-expand.closed svg{transform:rotate(-90deg)}
 .ag-lbl-wrap{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
-.ag-lbl{font-size:13px;color:#003179;white-space:normal;line-height:1.35}
+.ag-lbl{font-size:13px;color:#003179;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
 .ag-lbl-sub{font-size:11px;color:#666;white-space:nowrap}
 .ag-req-badge{font-size:9px;background:#1976d2;color:white;padding:1px 5px;border-radius:8px;white-space:nowrap;flex-shrink:0}
 .ag-row-right{flex:1;display:flex;align-items:stretch}
@@ -1368,11 +1368,11 @@ body.rotation-mode #btnBuildRotation{display:none;}
 /* Shift sub-rows */
 .ag-shift{display:flex;align-items:stretch;border-bottom:1px solid #f0f0f0;background:white}
 .ag-shift-left{
-  width:220px;min-width:220px;padding:4px 8px 4px 28px;border-right:2px solid #ddd;
+  width:260px;min-width:260px;padding:4px 8px 4px 28px;border-right:2px solid #ddd;
   position:sticky;left:0;background:white;z-index:5;
   display:flex;flex-direction:row;align-items:center;gap:6px;
 }
-.ag-shift-name{font-size:11px;font-weight:400;color:#666;white-space:normal;line-height:1.35;flex:1;min-width:0;}
+.ag-shift-name{font-size:11px;font-weight:400;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;flex:1;min-width:0;}
 .ma-select-all-btn{
   flex-shrink:0;height:20px;padding:0 7px;border:1px solid #1976d2;border-radius:3px;
   background:white;color:#1976d2;font-family:inherit;font-size:9.5px;font-weight:600;cursor:pointer;white-space:nowrap;
@@ -1578,7 +1578,7 @@ body.multi-agency-mode .ag-shift-cell:not(.wknd):hover::after{
 .alloc-ctx-row{display:flex;border-bottom:1px solid #f0f0f0;}
 .alloc-ctx-row.ctx-plc{border-left:3px solid #78afff;background:#f0f5ff;border-bottom:1px solid #dbeafe;}
 .alloc-ctx-row.ctx-req{background:white;border-bottom:1px solid #e8e8e8;}
-.alloc-ctx-left{width:220px;min-width:220px;padding:3px 6px 3px 8px;border-right:2px solid #ddd;position:sticky;left:0;z-index:5;display:flex;align-items:center;gap:5px;background:inherit;}
+.alloc-ctx-left{width:260px;min-width:260px;padding:3px 6px 3px 8px;border-right:2px solid #ddd;position:sticky;left:0;z-index:5;display:flex;align-items:center;gap:5px;background:inherit;}
 .alloc-ctx-row.ctx-plc .alloc-ctx-left{background:#f0f5ff;}
 .alloc-ctx-row.ctx-req .alloc-ctx-left{background:white;}
 .alloc-ctx-row.ctx-req:hover{background:#f5f8ff;}
@@ -3107,7 +3107,7 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
         Select shifts directly from the grid to build the rotation. Click a cell to assign it to a placement type.
       </div>
       <div class="ag-col-header" id="agColHeaderWrap">
-        <div style="width:220px;min-width:220px;flex-shrink:0;border-right:2px solid #ddd;position:sticky;left:0;z-index:4;background:#fafafa;">
+        <div style="width:260px;min-width:260px;flex-shrink:0;border-right:2px solid #ddd;position:sticky;left:0;z-index:4;background:#fafafa;">
           <div class="ag-col-left" style="width:auto;min-width:auto;border-right:none;">Agency</div>
         </div>
         <div style="flex:1;overflow:hidden;min-width:0;">
@@ -3117,7 +3117,7 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
       <!-- Requested shifts row — same flex structure as ag-row so cells align with grid -->
       <div id="agReqShiftsRowWrap" style="display:none;background:#eff6ff;border-bottom:1px solid #e2e8f0;position:sticky;top:36px;z-index:2;">
         <div style="display:flex;width:max-content;min-width:100%;">
-          <div id="agReqShiftsLeft" style="width:220px;min-width:220px;flex-shrink:0;padding:4px 8px;font-size:11px;font-weight:700;color:#1d4ed8;background:#eff6ff;position:sticky;left:0;z-index:3;border-right:1px solid #e8eaed;display:flex;align-items:center;gap:4px;letter-spacing:0.02em;"></div>
+          <div id="agReqShiftsLeft" style="width:260px;min-width:260px;flex-shrink:0;padding:4px 8px;font-size:11px;font-weight:700;color:#1d4ed8;background:#eff6ff;position:sticky;left:0;z-index:3;border-right:1px solid #e8eaed;display:flex;align-items:center;gap:4px;letter-spacing:0.02em;"></div>
           <div id="agReqShiftsCells" style="display:flex;background:#eff6ff;"></div>
         </div>
       </div>
@@ -4002,19 +4002,19 @@ const R94530 = {id:'r94530',reqNum:'Req: 94530',status:'pending',
   cells:{2:1}};
 
 const AGENCIES = [
-  { id:'hope', name:'(GM-Testing) Hope Learning Centre', expanded:true,
+  { id:'hope', name:'Hope Learning Centre', expanded:true,
     // caps = sum of AM + Night per day
     // AM:  [1,0,0,0,0,0, 1,0,0,1,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0,0]
     // Ngt: [-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1,-1,-1]
     // sum: [0,-1,-1,-1,-1,-1, 0,-1,-1,0,-1,-1,-1, 0,-1,-1,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1]
     caps:[0,-1,-1,-1,-1,-1,0,-1,-1,0,-1,-1,-1,0,-1,-1,-1,-1,-1,-1,0,-1,-1,-1,-1,-1,-1,-1],
     shifts:[
-      {id:'s-am',  label:'AM',        full:'AM (06:30 - 15:30) | Nursing',  caps:[5,2,6,null,null,null,null,1,4,5,null,null,null,null,3,5,2,null,null,null,null,1,6,3,null,null,null,null]},
-      {id:'s-def', label:'Default',   full:'Default (09:00 - 17:00) | Nursing', caps:[null,3,null,null,null,null,null,5,null,null,null,null,null,null,2,null,null,null,null,null,null,6,null,null,null,null,null,null]},
-      {id:'s-ngt', label:'Night',     full:'Night (14:00 - 22:30) | Nursing', caps:[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]},
-      {id:'s-ori', label:'Orientation',full:'Orientation (07:00 - 15:30) | Nursing', caps:Array(28).fill(null)},
-      {id:'s-day', label:'Day',       full:'Day (08:00 - 16:30) | Social Work', caps:Array(28).fill(null)},
-      {id:'s-ful', label:'Full Day',  full:'Full Day (10:00 - 18:30) | Social Work', caps:Array(28).fill(null)},
+      {id:'s-am',  label:'AM',        full:'AM (06:30-15:30) | Nursing',  caps:[5,2,6,null,null,null,null,1,4,5,null,null,null,null,3,5,2,null,null,null,null,1,6,3,null,null,null,null]},
+      {id:'s-def', label:'Default',   full:'Default (09:00-17:00) | Nursing', caps:[null,3,null,null,null,null,null,5,null,null,null,null,null,null,2,null,null,null,null,null,null,6,null,null,null,null,null,null]},
+      {id:'s-ngt', label:'Night',     full:'Night (14:00-22:30) | Nursing', caps:[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]},
+      {id:'s-ori', label:'Orientation',full:'Orientation (07:00-15:30) | Nursing', caps:Array(28).fill(null)},
+      {id:'s-day', label:'Day',       full:'Day (08:00-16:30) | Social Work', caps:Array(28).fill(null)},
+      {id:'s-ful', label:'Full Day',  full:'Full Day (10:00-18:30) | Social Work', caps:Array(28).fill(null)},
     ],
     pts:[
       {id:'pt-gm',   label:'Nursing | General Medical | Year 3 | Bachelor of Nursing',    caps:[2,2,2,null,null,2,2,2,2,2,null,null,2,2,2,2,2,null,null,2,2,2,2,2,null,null,null,null]},
@@ -4105,26 +4105,11 @@ const AGENCIES = [
        discipline:'Social Work',type:'General',year:'Yr 2',qty:4,dur:'10 days',
        shiftLabel:'Any shift',shiftBadge:'sb-all',chipStyle:'shift',chipLabel:'Any',
        shiftId:'all',ptId:'pt-gen',
-       agencyName:'(GM-Testing) Hope Learning Centre',
+       agencyName:'Hope Learning Centre',
        startDate:'2026-08-17',endDate:'2026-09-13',
        dates:'17 Aug – 13 Sep 2026',comment:'Test: request without shifts',allChip:true},
     ],
     hiddenChildren:[]
-  },
-  { id:'sa-b', name:'(SA) Agency B', expanded:true,
-    caps:Array(28).fill(null),
-    shifts:[
-      {id:'sab-am1',label:'AM (09:00 - 17:30) | Midwifery',full:'AM (09:00 - 17:30) | Midwifery',caps:Array(28).fill(null)},
-      {id:'sab-am2',label:'AM (07:00 - 15:30) | Social Work',full:'AM (07:00 - 15:30) | Social Work',caps:[4,null,null,null,null,null,null,1,null,null,null,null,null,null,5,null,null,null,null,null,null,2,null,null,null,null,null,null]},
-      {id:'sab-pm1',label:'PM (13:00 - 21:30) | Social Work',full:'PM (13:00 - 21:30) | Social Work',caps:[null,null,6,null,null,null,null,null,null,3,null,null,null,null,null,null,1,null,null,null,null,null,null,4,null,null,null,null]},
-      {id:'sab-pm2',label:'PM (13:00 - 22:00) | Paramedicine',full:'PM (13:00 - 22:00) | Paramedicine',caps:Array(28).fill(null)},
-    ],
-    pts:[
-      {id:'sab-pt1',label:'Nursing | Paediatrics | Year 2 | Bachelor of Nursing',caps:Array(28).fill(null)},
-      {id:'sab-pt2',label:'Nursing | Specialty | Year 2 | Bachelor of Nursing',caps:Array(28).fill(null)},
-      {id:'sab-pt3',label:"Nursing | Women's Health | Year 2 | Bachelor of Nursing",caps:Array(28).fill(null)},
-    ],
-    reqs:[],hiddenChildren:[]
   },
   { id:'sa-c', name:'(SA) Agency C', expanded:true,
     caps:[-2,-2,-2,-1,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-1],
@@ -11781,9 +11766,8 @@ let maPlacementType = null;
 // validated. Falls back to the request's own placement type for any agency
 // not listed here.
 const AGENCY_PLACEMENT_TYPES = {
-  'hope': ['General','Community'],
-  'sa-b': ['Aged Care','Cardiology'],
-  'sa-c': ['Aged Care','Critical Care','Emergency','Cardiology','Community','Mental Health','Oncology','Orthopaedics','Neurology','Respiratory','Renal','Perioperative'],
+  'hope': ['General Medical','Perioperative','Oncology'],
+  'sa-c': ['General Medical'],
   'g03':  ['Critical Care','Medical Surgical'],
   'at3111': ['Aged Care','Emergency'],
 };
