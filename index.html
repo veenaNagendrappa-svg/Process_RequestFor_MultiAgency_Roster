@@ -2586,11 +2586,15 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
 }/* ── "Roster needs attention" inline card ──────────────────────────
    Matches the visual language of the existing "Default Pattern Available"
    card — light info panel embedded in the flow, not a pop-up. */
-.rna-card{
-  background:#eef3f8;border:1px solid #b9d3f0;border-radius:8px;
-  padding:14px 16px;margin:8px 0 14px;
-}
-.rna-card-title{font-size:13px;font-weight:700;color:#003179;margin-bottom:8px;}
+.rna-card{ background:#ffffff;border:1.5px solid #d97706;border-radius:8px; padding:14px 16px;margin:8px 0 14px; }
+/* Warning treatment (Option D): amber outline + pill, body stays white.
+   Same visual language as the amber-outlined placement cards + pill on
+   the home page. Pill text #92400e on #fef3c7 = 6.4:1; outline #d97706
+   on white = 3.2:1 (meets 3:1 non-text contrast). */
+.rna-card-pill{ display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:600;margin-bottom:8px; }
+/* Read-only roster reference sits on grey so it doesn't blend into the white panel */
+.rna-card #plRosterContent, .rna-card #spRosterGenerated, .rna-card #aeRosterGenerated { background:#f3f4f6 !important; border:1px solid #e5e7eb !important; }
+.rna-card-title{font-size:13px;font-weight:700;color:#1a2332;margin-bottom:8px;}
 .rna-card-desc{font-size:12px;color:#374151;line-height:1.5;margin-bottom:14px;}
 .rna-card-ftr{display:flex;justify-content:flex-end;align-items:center;gap:16px;}
 .rna-card-link{
@@ -3212,6 +3216,7 @@ body.rotation-mode .ward-alloc-badge{display:none!important;}
         <!-- "Roster needs attention" inline card — shown in place of the
              roster content while a decision is pending -->
         <div class="sp-form-field span2 rna-card" id="rnaCard-sp" style="display:none;">
+          <span class="rna-card-pill"><span aria-hidden="true">⚠</span> Needs your decision</span>
           <div class="rna-card-title">Roster needs attention</div>
           <div class="rna-card-desc" id="rnaDesc-sp">This change requires the roster to be updated. Choose how to proceed.</div>
 
@@ -11671,6 +11676,7 @@ function closePlcDetail(){
       <!-- "Roster needs attention" inline card — shown in place of the
            roster content while a decision is pending -->
       <div class="rna-card" id="rnaCard-ae" style="display:none;">
+        <span class="rna-card-pill"><span aria-hidden="true">⚠</span> Needs your decision</span>
         <div class="rna-card-title">Roster needs attention</div>
         <div class="rna-card-desc" id="rnaDesc-ae">This change requires the roster to be updated. Choose how to proceed.</div>
         <div class="rna-card-ftr">
